@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\base\Base.Core\Base.Core.csproj" />
+    <ProjectReference Include="..\IAM_Domain.Contract\IAM_Domain.Contract.csproj" />
+    <ProjectReference Include="..\IAM_Domain\IAM_Domain.csproj" />
+  
+  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
+	</ItemGroup>
+</Project>
