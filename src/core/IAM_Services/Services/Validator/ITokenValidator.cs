@@ -44,7 +44,7 @@ namespace AccessManagement.Services
            
    
              if(!(context.SecurityToken is JwtSecurityToken Token)
-                || !userTokenRepository.CheckExistToken(Token.RawData))
+                || !userTokenRepository.CheckExistToken(new CheckExitTokenRequest(Token.RawData)))
             {
                 context.Fail("توکد در دیتابیس وجود ندارد");
                 return;

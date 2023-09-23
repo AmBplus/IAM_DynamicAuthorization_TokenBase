@@ -97,20 +97,9 @@ public class AccountsController : ControllerBase
     }
 
 
-    private LoginDataDto CreateToken(User user)
-    {
    
-
-        return new LoginDataDto()
-        {
-            Token = jwtToken,
-            RefreshToken = refreshToken.ToString()
-        };
-
-
-    }
 }
-}
+
 
 
 

@@ -1,17 +1,15 @@
 using AccessManagement.Authorizations;
 using AccessManagement.Settings;
+using Base.Shared.ResultUtility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-
+using AccessManagement.Services.Injection;
 var builder = WebApplication.CreateBuilder(args);
 
-// Add jwtSettings To IOC
-var jwtSettings = new JwtSettings();
-builder.Configuration.Bind("JWT", jwtSettings);
-builder.Services.AddSingleton(jwtSettings);
+builder.Services.BootstrapServices(builder.Configuration);
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -46,25 +44,7 @@ builder.Services.AddSwaggerGen(opt =>
         }
     });
 });
-// Adding Authentication
 
-builder.Services.AddAuthentication(opt => {
-    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings.ValidIssuer,
-            ValidAudience = jwtSettings.ValidAudience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
-        };
-    });
 
 builder.Services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
