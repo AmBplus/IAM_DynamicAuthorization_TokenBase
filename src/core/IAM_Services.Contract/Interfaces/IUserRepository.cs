@@ -7,14 +7,14 @@ public record ValidateUserRequest(string UserName, string Password);
 public record GetLoginCodeRequest(string PhoneNumber );
 public record LoginWithPhoneNumberCodeRequest(string PhoneNumber ,string Code);
 public record FindUserWithPhoneNumberRequest(string PhoneNumber );
-public record RegisterUserRequest(RegisterApplicationUserDto RegisterApplicationUser)
+public record RegisterApplicationUserRequest()
 {
-    public RegisterUserRequest(string phoneNumber)
-    {
-        PhoneNumber = phoneNumber;
-    }
 
-    public string PhoneNumber { get; }
+
+    public string Username;
+    public string Password;
+    public string PhoneNumber { get; set; }
+    public string Email { get; set; }
 }
 
 public record LogOutTokenBaseRequest(Guid UserId);
@@ -30,7 +30,7 @@ public record LogOutTokenBaseRequest(Guid UserId);
 
         public ApplicationUser FindUserWithPhoneNumber(FindUserWithPhoneNumberRequest request);
 
-        public ApplicationUser RegisterUser(RegisterUserRequest registerRequest);
+        public ApplicationUser RegisterUser(RegisterApplicationUserRequest registerRequest);
         public void Logout(LogOutTokenBaseRequest request);
     }
 

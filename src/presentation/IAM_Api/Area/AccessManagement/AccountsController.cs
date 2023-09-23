@@ -20,7 +20,7 @@ public class AccountsController : ControllerBase
 {
 
     private readonly IConfiguration configuration;
-    private readonly IUserRepository userRepository;;
+    private readonly IUserRepository userRepository;
     private readonly IUserTokenRepository userTokenRepository;
 
 
@@ -46,13 +46,13 @@ public class AccountsController : ControllerBase
                 Message = loginResult.Message
             });
         }
-       // var token = CreateToken();
+        // var token = CreateToken();
 
         return Ok(new LoginResultDto()
         {
             IsSuccess = true,
-            Data = token,
-        });
+            Data = null,
+        }); ;
     }
 
 
@@ -60,7 +60,7 @@ public class AccountsController : ControllerBase
     [Route("RefreshToken")]
     public IActionResult RefreshToken(string Refreshtoken)
     {
-        var usertoken = userTokenRepository.FindRefreshToken(Refreshtoken);
+        var usertoken = userTokenRepository.FindRefreshToken(new FindRefreshTokenRequest(Refreshtoken));
         if (usertoken == null)
         {
             return Unauthorized();
@@ -69,11 +69,11 @@ public class AccountsController : ControllerBase
         {
             return Unauthorized("Token Expire");
         }
+        throw new NotImplementedException();
+        //var token = CreateToken(usertoken.User);
+        //userTokenRepository.DeleteToken(Refreshtoken);
 
-        var token = CreateToken(usertoken.User);
-        userTokenRepository.DeleteToken(Refreshtoken);
-
-        return Ok(token);
+        //return Ok(token);
     }
 
 
@@ -81,7 +81,7 @@ public class AccountsController : ControllerBase
     [HttpGet]
     public IActionResult GetSmsCode(string PhoneNumber)
     {
-        var smsCode = userRepository.GetCode(PhoneNumber);
+        var smsCode = userRepository.GetCode(new GetLoginCodeRequest(PhoneNumber));
         //smsCode پیامک کنید به همین شماره
         return Ok();
     }
@@ -92,46 +92,14 @@ public class AccountsController : ControllerBase
     public IActionResult Logout()
     {
         var user = User.Claims.First(p => p.Type == "UserId").Value;
-        userRepository.Logout(Guid.Parse(user));
+        userRepository.Logout(new LogOutTokenBaseRequest(Guid.Parse(user)));
         return Ok();
     }
 
 
     private LoginDataDto CreateToken(User user)
     {
-        SecurityHelper securityHelper = new SecurityHelper();
-
-
-        var claims = new List<Claim>
-                {
-                    new Claim ("UserId", user.Id.ToString()),
-                    new Claim ("Name",  user?.Name??""),
-                };
-        string key = configuration["JWtConfig:Key"];
-        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-        var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-        var tokenexp = DateTime.Now.AddMinutes(int.Parse(configuration["JWtConfig:expires"]));
-        var token = new JwtSecurityToken(
-            issuer: configuration["JWtConfig:issuer"],
-            audience: configuration["JWtConfig:audience"],
-            expires: tokenexp,
-            notBefore: DateTime.Now,
-            claims: claims,
-            signingCredentials: credentials
-            );
-        var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-        var refreshToken = Guid.NewGuid();
-
-        userTokenRepository.SaveToken(new Models.Entities.UserToken()
-        {
-            MobileModel = "Iphone pro max",
-            TokenExp = tokenexp,
-            TokenHash = securityHelper.Getsha256Hash(jwtToken),
-            User = user,
-            RefreshToken = securityHelper.Getsha256Hash(refreshToken.ToString()),
-            RefreshTokenExp = DateTime.Now.AddDays(30)
-        });
+   
 
         return new LoginDataDto()
         {

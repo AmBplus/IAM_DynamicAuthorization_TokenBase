@@ -119,11 +119,11 @@ namespace AccessManagement.Services
             return user;
         }
 
-        public ApplicationUser RegisterUser(RegisterUserRequest registerRequest)
+        public ApplicationUser RegisterUser(RegisterApplicationUserRequest registerRequest)
         {
             ApplicationUser user = new ApplicationUser()
             {
-                PhoneNumber = registerRequest.RegisterApplicationUser.PhoneNumber,
+                PhoneNumber = registerRequest.PhoneNumber,
                 IsActive = true,
             };
             return user;
