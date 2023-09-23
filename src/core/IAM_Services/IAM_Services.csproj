@@ -12,8 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\base\Base.Core\Base.Core.csproj" />
+    <ProjectReference Include="..\..\base\Base.Shared\Base.Shared.csproj" />
     <ProjectReference Include="..\IAM_Domain\IAM_Domain.csproj" />
-    <ProjectReference Include="..\IAM_Services.Contract\IAM_Services.Contract.csproj" />
   </ItemGroup>
 
 </Project>

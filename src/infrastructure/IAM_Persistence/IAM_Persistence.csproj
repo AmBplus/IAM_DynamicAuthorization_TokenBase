@@ -16,7 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\core\IAM_Services.Contract\IAM_Services.Contract.csproj" />
+    <ProjectReference Include="..\..\core\IAM_Domain\IAM_Domain.csproj" />
+    <ProjectReference Include="..\..\core\IAM_Services\IAM_Services.csproj" />
   </ItemGroup>
 
 </Project>

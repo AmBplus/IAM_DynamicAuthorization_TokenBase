@@ -1,5 +1,9 @@
-using AccessManagement.Authorizations;
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IAM_Api.Controllers;
 
@@ -18,7 +22,7 @@ public class WeatherForecastController : ControllerBase
     {
         _logger = logger;
     }
-    [Permission("GetWeather")]
+   
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {

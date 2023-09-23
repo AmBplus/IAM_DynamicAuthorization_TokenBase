@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\core\IAM_Services.Contract\IAM_Services.Contract.csproj" />
     <ProjectReference Include="..\..\core\IAM_Services\IAM_Services.csproj" />
     <ProjectReference Include="..\IAM_Persistence\IAM_Persistence.csproj" />
   </ItemGroup>

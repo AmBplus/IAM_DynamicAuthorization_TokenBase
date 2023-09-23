@@ -1,5 +1,5 @@
 using AccessManagement.Authorizations;
-using AccessManagement.Settings;
+
 using Base.Shared.ResultUtility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -7,12 +7,16 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AccessManagement.Services.Injection;
+using AccessManagement.Controllers;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.BootstrapServices(builder.Configuration);
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddApplicationPart(typeof(AccountsController).GetTypeInfo().Assembly).AddControllersAsServices(); ;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddEndpointsApiExplorer();
