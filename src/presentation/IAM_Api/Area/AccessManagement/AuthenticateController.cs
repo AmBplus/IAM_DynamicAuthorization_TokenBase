@@ -39,7 +39,7 @@ public class AuthenticateController : ApiBaseController
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterCommandRequest model)
     {
-      var result =  await    _mediator.Send(model);
+      var result =  await  _mediator.Send(model);
         return MapToApiResult(result);
     }
 

@@ -32,7 +32,8 @@ namespace AccessManagement.Data
 
         public List<ApplicationRoleClaim> RoleClaims { get; set; }
         public List<ApplicationProfile> UsersProfiles { get; set; }
-        
+        public List<GroupPermission> GroupPermissions { get; set; }
+        public List<PermissionOperationType> PermissionOperationTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -20,6 +20,7 @@
   <ItemGroup>
     <Folder Include="Contract\DTO\" />
     <Folder Include="Contract\Interfaces\" />
+    <Folder Include="Services\Command\" />
   </ItemGroup>
 
 </Project>
