@@ -22,7 +22,7 @@ public class TokenController : ControllerBase
     {
         return Ok(await mediator.Send(request));
     }
-    // In Token controller
+    // revoke Refresh Token
     [HttpPost("revoke")]
     public async Task<IActionResult> Revoke(RevokeTokenRequest request)
     {
