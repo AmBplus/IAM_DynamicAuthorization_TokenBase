@@ -21,6 +21,7 @@
     <Folder Include="Contract\DTO\" />
     <Folder Include="Contract\Interfaces\" />
     <Folder Include="Services\Command\" />
+    <Folder Include="Services\NewFolder\" />
   </ItemGroup>
 
 </Project>

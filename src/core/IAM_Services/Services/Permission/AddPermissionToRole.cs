@@ -27,7 +27,7 @@ public class AddPermissionToRoleHandler : IRequestHandler<AddPermissionToRoleCom
     public async Task<ResultOperation> Handle(AddPermissionToRoleCommandRequest request, CancellationToken cancellationToken)
     {
         var role = _dbContext.Roles.FirstOrDefault(r => r.Name == request.RoleName);
-        var permission = _dbContext.ApplicationPermissions.FirstOrDefault(p => p.Name == request.PermissionName);
+        var permission = _dbContext.Permissions.FirstOrDefault(p => p.Name == request.PermissionName);
 
         if (role == null || permission == null)
             throw new Exception("Role or Permission not found");

@@ -21,19 +21,18 @@ namespace AccessManagement.Data
         ApplicationRoleClaim, ApplicationUserToken>
         , IAccessManagementDbContext
     {
-        public AccessManagementDbContext(DbContextOptions options ) : base( options ) { }    
-        public List<ApplicationPermission> ApplicationPermissions { get; set; }
-        public List<ApplicationDisplayName> DisplayNames { get; set; }
-        public List<ApplicationSmsCode> SmsCodes { get; set; }
-        public List<ApplicationUser> Users { get; set; }
-        public List<ApplicationRole> Roles { get; set; }
-        public List<ApplicationUserToken> UserTokens { get; set; }
-        public List<ApplicationUserClaim> UserClaims { get; set; }
-
-        public List<ApplicationRoleClaim> RoleClaims { get; set; }
-        public List<ApplicationProfile> UsersProfiles { get; set; }
-        public List<GroupPermission> GroupPermissions { get; set; }
-        public List<PermissionOperationType> PermissionOperationTypes { get; set; }
+        public AccessManagementDbContext(DbContextOptions<AccessManagementDbContext> options) :base(options) { }    
+        public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<ApplicationRole> Roles { get; set; }
+        public DbSet<ApplicationPermission> Permissions { get; set; }
+        public DbSet<ApplicationDisplayName> DisplayNames { get; set; }
+        public DbSet<ApplicationUserToken> UserTokens { get; set; }
+        public DbSet<ApplicationUserClaim> UserClaims { get; set; }
+        public DbSet<ApplicationRoleClaim> RoleClaims { get; }
+        public DbSet<ApplicationSmsCode> SmsCodes { get; set; }
+        public DbSet<ApplicationProfile> UsersProfiles { get; set; }
+        public DbSet<GroupPermission> GroupPermissions { get; set; }
+        public DbSet<PermissionOperationType> PermissionOperationTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

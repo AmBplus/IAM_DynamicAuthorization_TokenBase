@@ -29,9 +29,10 @@ namespace IAM_Api.Area.AccessManagement
         [HttpGet]
         [Route("GetPaginateUser")]
         
-        public async Task<IActionResult> GetPaginateUser(GetPaginateUsersQueryRequest request)
+        public async Task<IActionResult> GetPaginateUser(int page , int pageSize)
         {
-            var result = await Mediator.Send(request);
+            var requestPaginateUser = new GetPaginateUsersQueryRequest(page,pageSize){ };
+            var result = await Mediator.Send(requestPaginateUser);
             return Ok(result);  
         }
 
@@ -43,7 +44,7 @@ namespace IAM_Api.Area.AccessManagement
         [HttpGet]
         [Route("GetPaginateRole")]
 
-        public async Task<IActionResult> GetPaginateRoles(GetPaginateRolesQueryRequest request)
+        public async Task<IActionResult> GetPaginateRoles([FromHeader] GetPaginateRolesQueryRequest request)
         {
             var result = await Mediator.Send(request);
             return Ok(result);
@@ -57,7 +58,7 @@ namespace IAM_Api.Area.AccessManagement
         [HttpGet]
         [Route("GetUserById")]
 
-        public async Task<IActionResult> GetUserById(GetUserByIdQueryRequest request)
+        public async Task<IActionResult> GetUserById([FromHeader] GetUserByIdQueryRequest request)
         {
             var result = await Mediator.Send(request);
             return Ok(result);
@@ -72,7 +73,7 @@ namespace IAM_Api.Area.AccessManagement
         [HttpGet]
         [Route("GetUserByEmail")]
 
-        public async Task<IActionResult> GetUserByEmail(GetUserByEmailQueryRequest request)
+        public async Task<IActionResult> GetUserByEmail([FromHeader] GetUserByEmailQueryRequest request)
         {
             var result = await Mediator.Send(request);
             return Ok(result);
@@ -86,7 +87,7 @@ namespace IAM_Api.Area.AccessManagement
         [HttpGet]
         [Route("GetUserByUserName")]
 
-        public async Task<IActionResult> GetUserByUserName(GetUserByUsernameQueryRequest request)
+        public async Task<IActionResult> GetUserByUserName([FromHeader] GetUserByUsernameQueryRequest request)
         {
             var result = await Mediator.Send(request);
             return Ok(result);

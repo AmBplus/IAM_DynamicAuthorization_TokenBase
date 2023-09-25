@@ -36,7 +36,7 @@ namespace AccessManagement.Services
              if (res == null) throw new Exception("عملیات درج شده وجود ندارد");
              permissionOperationTypes.Add(res);
                     }
-            Context.ApplicationPermissions.Add(new Entities.ApplicationPermission
+            Context.Permissions.Add(new Entities.ApplicationPermission
             {
                 ActionName = request.Action,
                 GroupName = request.GroupName,

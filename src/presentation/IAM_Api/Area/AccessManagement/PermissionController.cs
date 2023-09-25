@@ -1,6 +1,6 @@
 ﻿using AccessManagement.Services;
 using Base.Shared.ResultUtility;
-
+using IAM_Services.Services.Permission;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,9 +24,9 @@ namespace AccessManagement.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Add Permission")]
+        [Route("AddPermission")]
         
-        public async Task<IActionResult> AddPermission(AddPermissionCommandRequest request)
+        public async Task<IActionResult> AddPermission([FromBody]AddPermissionCommandRequest request)
         {
             return Ok(await Mediator.Send(request));
         }
@@ -35,9 +35,21 @@ namespace AccessManagement.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [Route("Add Permission To Role")]
+        [Route("AddPermissionToRole")]
         [HttpPost]
         public async Task<IActionResult> AddPermissionToRole([FromBody]AddPermissionToRoleCommandRequest request)
+        {
+            var result = await Mediator.Send(request);
+            return Ok(result);
+        }
+        /// <summary>
+        /// دریافت گروه های پرمیشن ها
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [Route("GetPermissionGroups")]
+        [HttpPost]
+        public async Task<IActionResult> GetPermissionGroups([FromBody] GetAllPermissionGroupQueryRequest request)
         {
             var result = await Mediator.Send(request);
             return Ok(result);

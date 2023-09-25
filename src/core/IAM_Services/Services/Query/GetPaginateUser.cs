@@ -32,8 +32,8 @@ public class GetPaginateUsersHandler : IRequestHandler
     {
 
 
-        var pagedUsers = context.Users.Skip(request.Page * request.PageSize)
-                              .Take(request.PageSize)
+            var pagedUsers = context.Users?.Skip(request.Page  * request.PageSize)
+                                  .Take(request.PageSize)
                               .Select(x => new GetUserDtoQueryResponse(x.Email, x.UserName))
                               .ToList();
 
@@ -46,7 +46,7 @@ public class GetPaginateUsersHandler : IRequestHandler
        
         return new PaginateResultDto<GetUserDtoQueryResponse>
              (request.Page, request.PageSize, request.PageSize, pagedUsers)
-             .ToSuccessResult("کاربری وجود ندارد");
+             .ToSuccessResult("عملیات با موفقیت انجام شد");
 
     }
 }

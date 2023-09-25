@@ -18,13 +18,13 @@ public class TokenController : ControllerBase
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh(RefreshTokenRequest request)
+    public async Task<IActionResult> Refresh([FromBody]RefreshTokenRequest request)
     {
         return Ok(await mediator.Send(request));
     }
     // revoke Refresh Token
     [HttpPost("revoke")]
-    public async Task<IActionResult> Revoke(RevokeTokenRequest request)
+    public async Task<IActionResult> Revoke([FromBody] RevokeTokenRequest request)
     {
         await mediator.Send(request);
         return NoContent();

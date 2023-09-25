@@ -8,6 +8,7 @@ namespace AccessManagement.Entities
 {
     public class ApplicationProfile
     {
+        public Guid Id { get; set; }
         public string FatherName { get; set; }
         public DateTime BornDate { get; set; }
         public ApplicationUser ApplicationUser { get; set; }    

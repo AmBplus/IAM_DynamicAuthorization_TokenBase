@@ -29,9 +29,9 @@ namespace AccessManagement.Services.Injection
             // Get Connection String
             var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-            // Add Db Context
-            services.AddDbContext< AccessManagementDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            //// Add Db Context
+            //services.AddDbContext< AccessManagementDbContext>(options =>
+            //    options.UseSqlServer(connectionString));
             services.AddDbContext<IAccessManagementDbContext,AccessManagementDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
