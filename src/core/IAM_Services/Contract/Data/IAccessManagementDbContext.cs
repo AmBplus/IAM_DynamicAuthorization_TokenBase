@@ -18,5 +18,6 @@ namespace AccessManagement.Data
         public List<ApplicationUserClaim> UserClaims { get; set; } 
         public List<ApplicationRoleClaim> RoleClaims { get;}
         public List<ApplicationSmsCode> SmsCodes { get; set; }     
+        public List<ApplicationProfile> UsersProfiles { get; set; }     
     }
 }

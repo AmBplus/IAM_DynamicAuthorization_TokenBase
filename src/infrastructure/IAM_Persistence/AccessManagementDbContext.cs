@@ -31,6 +31,8 @@ namespace AccessManagement.Data
         public List<ApplicationUserClaim> UserClaims { get; set; }
 
         public List<ApplicationRoleClaim> RoleClaims { get; set; }
+        public List<ApplicationProfile> UsersProfiles { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
