@@ -205,7 +205,7 @@ namespace IAM_Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("MobileModel")
+                    b.Property<string>("Device")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

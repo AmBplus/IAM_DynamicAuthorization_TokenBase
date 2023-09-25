@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IAM_Persistence.Migrations
 {
     [DbContext(typeof(AccessManagementDbContext))]
-    [Migration("20230923072519_init")]
-    partial class init
+    [Migration("20230925064151_changeEntityStructure")]
+    partial class changeEntityStructure
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -208,7 +208,7 @@ namespace IAM_Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("MobileModel")
+                    b.Property<string>("Device")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -237,7 +237,6 @@ namespace IAM_Persistence.Migrations
                     b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                    
                 });
 
             modelBuilder.Entity("IAM_Domain.Entities.ApplicationUserRole", b =>
@@ -287,13 +286,13 @@ namespace IAM_Persistence.Migrations
                     b.HasOne("AccessManagement.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AccessManagement.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");

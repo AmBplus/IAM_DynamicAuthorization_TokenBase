@@ -17,4 +17,9 @@
     <ProjectReference Include="..\IAM_Domain\IAM_Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contract\DTO\" />
+    <Folder Include="Contract\Interfaces\" />
+  </ItemGroup>
+
 </Project>

@@ -10,7 +10,7 @@ public class ApplicationUserToken : IdentityUserToken<Guid>
     public string RefreshTokenHash { get; set; }
     public DateTime RefreshTokenExp { get; set; }
 
-    public string MobileModel { get; set; }
+    public string Device { get; set; }
 
     public ApplicationUser User { get; set; }
     public Guid UserId { get; set; }

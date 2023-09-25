@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace IAM_Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class changeEntityStructure : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -150,7 +150,7 @@ namespace IAM_Persistence.Migrations
                     TokenExp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RefreshTokenHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RefreshTokenExp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MobileModel = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Device = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },

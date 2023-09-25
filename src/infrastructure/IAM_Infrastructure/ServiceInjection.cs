@@ -1,4 +1,4 @@
-﻿using AccessManagement.Contract;
+﻿
 using AccessManagement.Data;
 using AccessManagement.Entities;
 
@@ -57,9 +57,10 @@ namespace AccessManagement.Services.Injection
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
         };
     });
+            services.AddTransient<IJwtService, JwtService>();
+            services.AddTransient<ITokenService, TokenService>();
+            services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(RevokeTokenHandler).Assembly));
 
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IUserTokenRepository, UserTokenRepository>(); 
             return services;
         }
     }
