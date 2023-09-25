@@ -18,7 +18,7 @@ public record GetUserByUsernameQueryRequest(string Username) : IRequest<ResultOp
 
    
 
-    public  async  Task<ResultOperation<GetUserDtoQueryResponse>> IRequestHandler<GetUserByUsernameQueryRequest, ResultOperation<GetUserDtoQueryResponse>>.Handle(GetUserByUsernameQueryRequest request, CancellationToken cancellationToken)
+    public  async  Task<ResultOperation<GetUserDtoQueryResponse>>  Handle(GetUserByUsernameQueryRequest request, CancellationToken cancellationToken)
         {
             var user =  _dbContext.Users.FirstOrDefault(x => x.UserName == request.Username);
             if(user == null) {

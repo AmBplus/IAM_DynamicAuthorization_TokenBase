@@ -6,8 +6,7 @@ using static AccessManagement.Services.Query.GetRoleByIdHandler;
 namespace AccessManagement.Services.Query;
 public record GetUserByEmailQueryRequest(string Email) : IRequest<ResultOperation<GetUserDtoQueryResponse>>;
 
-public partial class GetRoleByIdHandler
-{
+
     public class GetUserByEmailHandler : IRequestHandler<GetUserByEmailQueryRequest, ResultOperation<GetUserDtoQueryResponse>>
     {
         private readonly IAccessManagementDbContext _dbContext;
@@ -28,3 +27,4 @@ public partial class GetRoleByIdHandler
 
         }
     }
+
