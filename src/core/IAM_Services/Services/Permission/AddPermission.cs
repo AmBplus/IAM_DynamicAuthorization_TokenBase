@@ -43,7 +43,7 @@ namespace AccessManagement.Services
                 GroupPermission= groupName,
                 Name = $"{request.GroupName}:{request.Action}",
                 PermissionOperation = permissionOperationTypes ,
-                Id = Guid.NewGuid(),
+               
             });
             await Context.SaveChangesAsync();
             return ResultOperation.ToSuccessResult();

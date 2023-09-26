@@ -1,4 +1,5 @@
 ﻿using AccessManagement.Services;
+using AccessManagement.Services.Permission.Query;
 using Base.Shared.ResultUtility;
 using IAM_Services.Services.Permission;
 using MediatR;
@@ -55,5 +56,18 @@ namespace AccessManagement.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// گرفتن مجوز ها بر اساس گروه
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetAllPermissionByGroupName")]
+        public async Task<IActionResult> GetAllPermissionByGroupName(int? id = null, string name = null)
+        {
+            GetAllPermissionOfGroupQueryRequest request = new GetAllPermissionOfGroupQueryRequest() { Id = id,GroupName = name};    
+            var result = await Mediator.Send(request);
+            return Ok(result);
+        }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IAM_Persistence.Migrations
 {
     [DbContext(typeof(AccessManagementDbContext))]
-    [Migration("20230925090413_AddProfileUser")]
-    partial class AddProfileUser
+    [Migration("20230926080610_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,88 @@ namespace IAM_Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AccessManagement.Entities.ApplicationDisplayName", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CountryCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DisplayNames");
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.ApplicationPermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ApplicationRoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("GroupName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GroupPermissionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MaduleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationRoleId");
+
+                    b.HasIndex("GroupPermissionId");
+
+                    b.ToTable("Permissions");
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.ApplicationProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("BornDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FatherName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("UsersProfiles");
+                });
 
             modelBuilder.Entity("AccessManagement.Entities.ApplicationRole", b =>
                 {
@@ -75,6 +157,36 @@ namespace IAM_Persistence.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.ApplicationSmsCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RequestCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Used")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SmsCodes");
                 });
 
             modelBuilder.Entity("AccessManagement.Entities.ApplicationUser", b =>
@@ -239,6 +351,45 @@ namespace IAM_Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AccessManagement.Entities.GroupPermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GroupPermissions");
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.PermissionOperationType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ApplicationPermissionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationPermissionId");
+
+                    b.ToTable("PermissionOperationTypes");
+                });
+
             modelBuilder.Entity("IAM_Domain.Entities.ApplicationUserRole", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -252,6 +403,32 @@ namespace IAM_Persistence.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.ApplicationPermission", b =>
+                {
+                    b.HasOne("AccessManagement.Entities.ApplicationRole", null)
+                        .WithMany("Permissions")
+                        .HasForeignKey("ApplicationRoleId");
+
+                    b.HasOne("AccessManagement.Entities.GroupPermission", "GroupPermission")
+                        .WithMany("ApplicationPermissions")
+                        .HasForeignKey("GroupPermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupPermission");
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.ApplicationProfile", b =>
+                {
+                    b.HasOne("AccessManagement.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("AccessManagement.Entities.ApplicationRoleClaim", b =>
@@ -298,6 +475,13 @@ namespace IAM_Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("AccessManagement.Entities.PermissionOperationType", b =>
+                {
+                    b.HasOne("AccessManagement.Entities.ApplicationPermission", null)
+                        .WithMany("PermissionOperation")
+                        .HasForeignKey("ApplicationPermissionId");
+                });
+
             modelBuilder.Entity("IAM_Domain.Entities.ApplicationUserRole", b =>
                 {
                     b.HasOne("AccessManagement.Entities.ApplicationRole", null)
@@ -311,6 +495,21 @@ namespace IAM_Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.ApplicationPermission", b =>
+                {
+                    b.Navigation("PermissionOperation");
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.ApplicationRole", b =>
+                {
+                    b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.GroupPermission", b =>
+                {
+                    b.Navigation("ApplicationPermissions");
                 });
 #pragma warning restore 612, 618
         }

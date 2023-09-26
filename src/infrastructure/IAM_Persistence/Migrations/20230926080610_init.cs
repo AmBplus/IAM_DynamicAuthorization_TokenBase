@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace IAM_Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class changeEntityStructure : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,6 +51,50 @@ namespace IAM_Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DisplayNames",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CountryCode = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DisplayNames", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupPermissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupPermissions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SmsCodes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Used = table.Column<bool>(type: "bit", nullable: false),
+                    RequestCount = table.Column<int>(type: "int", nullable: false),
+                    InsertDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SmsCodes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -171,6 +215,74 @@ namespace IAM_Persistence.Migrations
                         onDelete: ReferentialAction.NoAction);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UsersProfiles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FatherName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BornDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsersProfiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UsersProfiles_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Permissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaduleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GroupName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ActionName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GroupPermissionId = table.Column<int>(type: "int", nullable: false),
+                    ApplicationRoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Permissions_AspNetRoles_ApplicationRoleId",
+                        column: x => x.ApplicationRoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Permissions_GroupPermissions_GroupPermissionId",
+                        column: x => x.GroupPermissionId,
+                        principalTable: "GroupPermissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PermissionOperationTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApplicationPermissionId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PermissionOperationTypes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PermissionOperationTypes_Permissions_ApplicationPermissionId",
+                        column: x => x.ApplicationPermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -214,6 +326,26 @@ namespace IAM_Persistence.Migrations
                 name: "IX_AspNetUserTokens_UserId1",
                 table: "AspNetUserTokens",
                 column: "UserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PermissionOperationTypes_ApplicationPermissionId",
+                table: "PermissionOperationTypes",
+                column: "ApplicationPermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Permissions_ApplicationRoleId",
+                table: "Permissions",
+                column: "ApplicationRoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Permissions_GroupPermissionId",
+                table: "Permissions",
+                column: "GroupPermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersProfiles_ApplicationUserId",
+                table: "UsersProfiles",
+                column: "ApplicationUserId");
         }
 
         /// <inheritdoc />
@@ -235,10 +367,28 @@ namespace IAM_Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "DisplayNames");
+
+            migrationBuilder.DropTable(
+                name: "PermissionOperationTypes");
+
+            migrationBuilder.DropTable(
+                name: "SmsCodes");
+
+            migrationBuilder.DropTable(
+                name: "UsersProfiles");
+
+            migrationBuilder.DropTable(
+                name: "Permissions");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "GroupPermissions");
         }
     }
 }

@@ -44,9 +44,11 @@ namespace IAM_Persistence.Migrations
 
             modelBuilder.Entity("AccessManagement.Entities.ApplicationPermission", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ActionName")
                         .IsRequired()
@@ -365,11 +367,14 @@ namespace IAM_Persistence.Migrations
 
             modelBuilder.Entity("AccessManagement.Entities.PermissionOperationType", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<Guid?>("ApplicationPermissionId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ApplicationPermissionId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

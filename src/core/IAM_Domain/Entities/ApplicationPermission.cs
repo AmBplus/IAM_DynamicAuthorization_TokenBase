@@ -4,7 +4,7 @@ namespace AccessManagement.Entities
 {
     public class ApplicationPermission
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string MaduleName { get; set;}
         public string GroupName { get; set;}
