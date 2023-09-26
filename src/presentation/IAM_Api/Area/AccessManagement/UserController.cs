@@ -29,7 +29,7 @@ namespace IAM_Api.Area.AccessManagement
         [HttpGet]
         [Route("GetPaginateUser")]
         
-        public async Task<IActionResult> GetPaginateUser(int page , int pageSize)
+        public async Task<IActionResult> GetPaginateUser(int page, int pageSize)
         {
             var requestPaginateUser = new GetPaginateUsersQueryRequest(page,pageSize){ };
             var result = await Mediator.Send(requestPaginateUser);
@@ -44,8 +44,9 @@ namespace IAM_Api.Area.AccessManagement
         [HttpGet]
         [Route("GetPaginateRole")]
 
-        public async Task<IActionResult> GetPaginateRoles([FromHeader] GetPaginateRolesQueryRequest request)
+        public async Task<IActionResult> GetPaginateRoles(int page, int pageSize)
         {
+            var request = new GetPaginateRolesQueryRequest(page, pageSize); 
             var result = await Mediator.Send(request);
             return Ok(result);
         }
@@ -55,7 +56,7 @@ namespace IAM_Api.Area.AccessManagement
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Route("GetUserById")]
 
         public async Task<IActionResult> GetUserById([FromHeader] GetUserByIdQueryRequest request)
@@ -84,7 +85,7 @@ namespace IAM_Api.Area.AccessManagement
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Route("GetUserByUserName")]
 
         public async Task<IActionResult> GetUserByUserName([FromHeader] GetUserByUsernameQueryRequest request)
