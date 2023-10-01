@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace AccessManagement.Entities;
 
-public class ApplicationUserClaim : IdentityUserClaim<Guid>
+public class UserClaimEntity : IdentityUserClaim<Guid>
 {
 }

@@ -1,8 +1,10 @@
 ﻿namespace AccessManagement.Entities;
 
-public class ApplicationRolePermission
+public class RolePermissionEntity
 {
     public Guid Id { get; set; }
-    public ApplicationDisplayName DisplayName { get; set; }
-    public List<ApplicationRole> applicationRoles { get; set; }
+    public PermissionEntity Permission { get; set; }
+    public int PermissionId { get; set; }
+   
+    public List<RoleEntity> Roles { get; set; }
 }

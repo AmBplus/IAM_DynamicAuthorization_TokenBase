@@ -2,7 +2,7 @@
 
 namespace AccessManagement.Entities;
 
-public class ApplicationUserToken : IdentityUserToken<Guid>
+public class UserTokenEntity : IdentityUserToken<Guid>
 {
     
     public string TokenHash { get; set; }
@@ -12,6 +12,6 @@ public class ApplicationUserToken : IdentityUserToken<Guid>
 
     public string Device { get; set; }
 
-    public ApplicationUser User { get; set; }
+    public UserEntity User { get; set; }
     public Guid UserId { get; set; }
 }

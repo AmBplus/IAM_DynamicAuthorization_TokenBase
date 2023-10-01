@@ -2,6 +2,6 @@
 
 namespace AccessManagement.Entities;
 
-public class ApplicationRoleClaim : IdentityRoleClaim<Guid> { 
+public class RoleClaimEntity : IdentityRoleClaim<Guid> { 
 
 }

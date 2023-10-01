@@ -1,11 +1,12 @@
-﻿using AccessManagement.Data;
-using Base.Shared.ResultUtility;
+﻿using Base.Shared.ResultUtility;
+using AccessManagement.Data;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccessManagement.Services.Permission.Query
 {
@@ -19,9 +20,10 @@ namespace AccessManagement.Services.Permission.Query
     {
         public int ActionId { get; set; } 
         public string ActionName { get; set; }  
-        public IEnumerable<PermissionOperationName> permissionOperations { get; set; } 
+        public string Name { get; set; }
+        
     }
-    public record PermissionOperationName(int OperationId, string OperationName);
+ 
     public class GetAllPermissionOfGroupQueryRequest : IRequest<ResultOperation<GetAllPermissionByGroupQueryResponse>>
     {
         public int? Id { get; set; }
@@ -39,7 +41,8 @@ namespace AccessManagement.Services.Permission.Query
         public async Task<ResultOperation<GetAllPermissionByGroupQueryResponse>> Handle(GetAllPermissionOfGroupQueryRequest request, CancellationToken cancellationToken)
         {
            var result = Context.GroupPermissions.Where(x => (request.Id != null && request.Id == x.Id) ||
-            (string.IsNullOrWhiteSpace(request.GroupName) && x.Name.Contains(request.GroupName)))
+            (!string.IsNullOrWhiteSpace(request.GroupName) && x.Name.Contains(request.GroupName)))
+                .Include(x=>x.ApplicationPermissions)
                 .Select(x => new GetAllPermissionByGroupQueryResponse()
                 {
                     GroupId = x.Id,
@@ -48,10 +51,8 @@ namespace AccessManagement.Services.Permission.Query
                     new ActionPermissionSummeryDto()
                     {
                         ActionId = c.Id,
-                        ActionName = x.Name,
-                        permissionOperations = c.PermissionOperation.Select(o =>
-
-                        new PermissionOperationName(o.Id, o.Name))
+                        ActionName = c.ActionName,
+                        Name = c.Name
                     }
                     )
                 }).SingleOrDefault();

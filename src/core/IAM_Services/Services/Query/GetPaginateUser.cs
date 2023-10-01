@@ -1,5 +1,5 @@
-﻿using AccessManagement.Data;
-using Base.Shared.ResultUtility;
+﻿using Base.Shared.ResultUtility;
+using AccessManagement.Data;
 using MediatR;
 using System;
 using System.Collections.Generic;

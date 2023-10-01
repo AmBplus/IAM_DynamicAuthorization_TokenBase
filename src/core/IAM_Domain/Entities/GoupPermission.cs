@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace AccessManagement.Entities
 {
-    public class GroupPermission
+    public class GroupPermissionEntity : BaseEntity<int>
     {
-        public int Id { get; set; } 
+        
         public string Name { get; set; }
-        public List<ApplicationPermission> ApplicationPermissions { get; set; }
+        public List<PermissionEntity> ApplicationPermissions { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IAM_Api.Area.AccessManagement
+namespace AccessManagement.Api
 {
     [ApiController]
     [Route("api/[controller]")]

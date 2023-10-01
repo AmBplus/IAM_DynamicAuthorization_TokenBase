@@ -1,10 +1,13 @@
 ﻿using AccessManagement.Services;
 using AccessManagement.Services.Permission.Query;
 using Base.Shared.ResultUtility;
-using IAM_Services.Services.Permission;
+using AccessManagement.Services.Permission;
+using AccessManagement.Services.Permission.Command;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AccessManagement.Controllers
@@ -20,6 +23,22 @@ namespace AccessManagement.Controllers
             Mediator = mediator;
         }
         /// <summary>
+        /// اضافه کردن گروه مجوز ها
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("AddGroupPermission")]
+        public async Task<IActionResult> AddGroupPermission(string name,CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return new  BadRequestObjectResult(ResultOperation.ToFailedResult("مقدار اسم خالی یا نال است"));
+            return Ok( await Mediator.Send(new AddGroupPermissionCommandRequest(name)));
+        }
+
+
+
+        /// <summary>
         /// اضافه کردن پرمیشن 
         /// </summary>
         /// <param name="request"></param>
@@ -32,7 +51,7 @@ namespace AccessManagement.Controllers
             return Ok(await Mediator.Send(request));
         }
         /// <summary>
-        /// اضافه کردن پرمیشن به نقش
+        /// اضافه کردن مجوز  به نقش
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -44,7 +63,7 @@ namespace AccessManagement.Controllers
             return Ok(result);
         }
         /// <summary>
-        /// دریافت گروه های پرمیشن ها
+        /// دریافت گروه های مجوز ها
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -69,5 +88,17 @@ namespace AccessManagement.Controllers
             var result = await Mediator.Send(request);
             return Ok(result);
         }
+
+
+        [Route("GetPermissionDetailByActionIdOrName")]
+        [HttpPost]
+        public async Task<IActionResult> GetPermissionDetailByActionIdOrName([FromBody] GetPermissionDetailByActionIdOrNameQueryRequest request)
+        {
+            var result = await Mediator.Send(request);
+            return Ok(result);
+        }
+
+
+
     }
 }

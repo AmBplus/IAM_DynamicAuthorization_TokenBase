@@ -1,7 +1,6 @@
-﻿using AccessManagement.Data;
-using MediatR;
+﻿using MediatR;
 using Base.Shared.ResultUtility;
-
+using AccessManagement.Data;
 
 namespace AccessManagement.Services.Query;
 public record GetUserByUsernameQueryRequest(string Username) : IRequest<ResultOperation<GetUserDtoQueryResponse>>;

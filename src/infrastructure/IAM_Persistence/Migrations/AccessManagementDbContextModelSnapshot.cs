@@ -52,7 +52,7 @@ namespace IAM_Persistence.Migrations
 
                     b.Property<string>("ActionName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid?>("ApplicationRoleId")
                         .HasColumnType("uniqueidentifier");
@@ -64,15 +64,14 @@ namespace IAM_Persistence.Migrations
                     b.Property<int>("GroupPermissionId")
                         .HasColumnType("int");
 
-                    b.Property<string>("MaduleName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActionName")
+                        .IsUnique();
 
                     b.HasIndex("ApplicationRoleId");
 
@@ -358,14 +357,17 @@ namespace IAM_Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("GroupPermissions");
                 });
 
-            modelBuilder.Entity("AccessManagement.Entities.PermissionOperationType", b =>
+            modelBuilder.Entity("AccessManagement.Entities.MenuEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -373,8 +375,44 @@ namespace IAM_Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ApplicationPermissionId")
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MenuGroupId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MenuGroupId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("MenuEntities");
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.MenuGroupEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -382,9 +420,59 @@ namespace IAM_Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationPermissionId");
+                    b.ToTable("MenuGroupEntities");
+                });
 
-                    b.ToTable("PermissionOperationTypes");
+            modelBuilder.Entity("AccessManagement.Entities.ModulePermissionEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ModulePermissions");
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.RoleMenuEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GroupName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MenuEntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MenuEntityId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("RoleMenuEntities");
                 });
 
             modelBuilder.Entity("IAM_Domain.Entities.ApplicationUserRole", b =>
@@ -472,11 +560,40 @@ namespace IAM_Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AccessManagement.Entities.PermissionOperationType", b =>
+            modelBuilder.Entity("AccessManagement.Entities.MenuEntity", b =>
                 {
-                    b.HasOne("AccessManagement.Entities.ApplicationPermission", null)
-                        .WithMany("PermissionOperation")
-                        .HasForeignKey("ApplicationPermissionId");
+                    b.HasOne("AccessManagement.Entities.MenuGroupEntity", "MenuGroup")
+                        .WithMany()
+                        .HasForeignKey("MenuGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AccessManagement.Entities.MenuEntity", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("MenuGroup");
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.RoleMenuEntity", b =>
+                {
+                    b.HasOne("AccessManagement.Entities.MenuEntity", "MenuEntity")
+                        .WithMany()
+                        .HasForeignKey("MenuEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AccessManagement.Entities.ApplicationRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MenuEntity");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("IAM_Domain.Entities.ApplicationUserRole", b =>
@@ -494,11 +611,6 @@ namespace IAM_Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AccessManagement.Entities.ApplicationPermission", b =>
-                {
-                    b.Navigation("PermissionOperation");
-                });
-
             modelBuilder.Entity("AccessManagement.Entities.ApplicationRole", b =>
                 {
                     b.Navigation("Permissions");
@@ -507,6 +619,11 @@ namespace IAM_Persistence.Migrations
             modelBuilder.Entity("AccessManagement.Entities.GroupPermission", b =>
                 {
                     b.Navigation("ApplicationPermissions");
+                });
+
+            modelBuilder.Entity("AccessManagement.Entities.MenuEntity", b =>
+                {
+                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }

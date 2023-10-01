@@ -3,6 +3,7 @@ using AccessManagement.Data;
 using AccessManagement.Entities;
 
 using AccessManagement.Services;
+using AccessManagement.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +37,7 @@ namespace AccessManagement.Services.Injection
                 options.UseSqlServer(connectionString));
 
             // Adding Identity
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            services.AddIdentity<UserEntity, RoleEntity>()
                 .AddEntityFrameworkStores<AccessManagementDbContext>()
                 .AddDefaultTokenProviders();
 

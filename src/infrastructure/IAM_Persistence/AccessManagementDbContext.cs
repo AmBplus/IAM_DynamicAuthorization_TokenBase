@@ -1,6 +1,6 @@
-﻿using AccessManagement.Data;
-using AccessManagement.Entities;
+﻿using AccessManagement.Entities;
 using IAM_Domain.Entities;
+using AccessManagement.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,29 +16,33 @@ using System.Threading.Tasks;
 namespace AccessManagement.Data
 {
     public class AccessManagementDbContext : 
-        IdentityDbContext<ApplicationUser, 
-        ApplicationRole, Guid, ApplicationUserClaim
-        , ApplicationUserRole, ApplicationUserLogin,
-        ApplicationRoleClaim, ApplicationUserToken>
+        IdentityDbContext<UserEntity, 
+        RoleEntity, Guid, UserClaimEntity
+        , UserRoleEntity, UserLoginEntity,
+        RoleClaimEntity, UserTokenEntity>
         , IAccessManagementDbContext
     {
-        public AccessManagementDbContext(DbContextOptions<AccessManagementDbContext> options) :base(options) { }    
-        public DbSet<ApplicationUser> Users { get; set; }
-        public DbSet<ApplicationRole> Roles { get; set; }
-        public DbSet<ApplicationPermission> Permissions { get; set; }
-        public DbSet<ApplicationDisplayName> DisplayNames { get; set; }
-        public DbSet<ApplicationUserToken> UserTokens { get; set; }
-        public DbSet<ApplicationUserClaim> UserClaims { get; set; }
-        public DbSet<ApplicationRoleClaim> RoleClaims { get; }
-        public DbSet<ApplicationSmsCode> SmsCodes { get; set; }
-        public DbSet<ApplicationProfile> UsersProfiles { get; set; }
-        public DbSet<GroupPermission> GroupPermissions { get; set; }
-        public DbSet<PermissionOperationType> PermissionOperationTypes { get; set; }
+        public AccessManagementDbContext(DbContextOptions<AccessManagementDbContext> options) :base(options) { }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<RoleEntity> Roles { get; set; }
+        public DbSet<PermissionEntity> Permissions { get; set; }
+        
+        public DbSet<UserTokenEntity> UserTokens { get; set; }
+        public DbSet<UserClaimEntity> UserClaims { get; set; }
+        public DbSet<RoleClaimEntity> RoleClaims { get; }
+        
+        public DbSet<UserProfileEntity> UsersProfiles { get; set; }
+        public DbSet<GroupPermissionEntity> GroupPermissions { get; set; }
+
+        public DbSet<MenuEntity> MenuEntities { get; set; }
+        public DbSet<RoleMenuEntity> RoleMenuEntities { get; set; }
+        public DbSet<MenuGroupEntity> MenuGroupEntities { get; set; }
+        public DbSet<SystemEntity> SystemEntities { get ; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
         
-           
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(builder);
         }
     }

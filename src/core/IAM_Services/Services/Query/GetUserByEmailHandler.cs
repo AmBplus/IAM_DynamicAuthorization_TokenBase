@@ -1,7 +1,7 @@
-﻿using AccessManagement.Data;
-using MediatR;
+﻿using MediatR;
 using Base.Shared.ResultUtility;
 using static AccessManagement.Services.Query.GetRoleByIdHandler;
+using AccessManagement.Data;
 
 namespace AccessManagement.Services.Query;
 public record GetUserByEmailQueryRequest(string Email) : IRequest<ResultOperation<GetUserDtoQueryResponse>>;

@@ -14,7 +14,7 @@ namespace Base.Core.BaseEntities
         public bool IsRemoved { get;private  set; } = false;
         public BaseEntity()
         {
-            CreatedDate = DateUtility.DateTimeNow();
+            CreatedDate = DateUtility.DateTimeNow;
         }
 
         public virtual ResultOperation Remove()
