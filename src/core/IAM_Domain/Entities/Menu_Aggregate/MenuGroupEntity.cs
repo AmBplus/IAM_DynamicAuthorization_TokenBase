@@ -5,7 +5,7 @@
         public MenuGroupEntity() { 
             SubMenus = new List<MenuGroupEntity>(); 
         }
-        public MenuGroupEntity Parrent { get; set; }
+        public MenuGroupEntity Parent { get; set; }
         public List<MenuGroupEntity> SubMenus { get; set; }
         
         public string Name { get; set; }    

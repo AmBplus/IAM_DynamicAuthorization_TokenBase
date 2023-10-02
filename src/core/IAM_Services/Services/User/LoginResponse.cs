@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace AccessManagement.Services
+namespace IAM_Services.Services.User
 {
-  
+
     public class LoginResponse
     {
         public string Token { get; set; }
@@ -11,4 +11,3 @@ namespace AccessManagement.Services
         public string RefreshTokenExpireTime { get; set; }
     }
 }
-    

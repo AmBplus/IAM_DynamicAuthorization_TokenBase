@@ -21,12 +21,13 @@ public class RevokeTokenHandler : IRequestHandler<RevokeTokenRequest>
 
         public async Task Handle(RevokeTokenRequest request, CancellationToken cancellationToken)
         {
-            var user = await userManager.FindByIdAsync(request.UserId);
+            throw new NotImplementedException();    
+            //var user = await userManager.FindByIdAsync(request.UserId);
 
-            if (user == null) { return; }   
-            user.RefreshToken = null;
+            //if (user == null) { return; }   
+            //user.RefreshToken = null;
 
-            await userManager.UpdateAsync(user);
+            //await userManager.UpdateAsync(user);
 
            
         }

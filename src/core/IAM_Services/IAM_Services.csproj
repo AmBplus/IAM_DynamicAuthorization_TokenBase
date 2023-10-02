@@ -17,4 +17,9 @@
     <ProjectReference Include="..\IAM_Domain\IAM_Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\Role\Command\" />
+    <Folder Include="Services\Role\Query\" />
+  </ItemGroup>
+
 </Project>

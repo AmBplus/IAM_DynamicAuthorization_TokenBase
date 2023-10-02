@@ -9,14 +9,16 @@ using System.Text;
 using AccessManagement.Services.Injection;
 using AccessManagement.Controllers;
 using System.Reflection;
-
+using Microsoft.AspNetCore.Authentication;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.BootstrapServices(builder.Configuration);
 // Add services to the container.
 
 builder.Services.AddControllers()
-    .AddApplicationPart(typeof(AuthenticateController).GetTypeInfo().Assembly).AddControllersAsServices(); ;
+    .AddApplicationPart(typeof(AuthenticateController).GetTypeInfo().Assembly).AddControllersAsServices()
+    
+    ; 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddEndpointsApiExplorer();

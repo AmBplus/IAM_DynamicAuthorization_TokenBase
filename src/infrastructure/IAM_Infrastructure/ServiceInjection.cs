@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AccessManagement.Services.Permission.Command;
+using AccessManagement.Services.Permission;
 
 namespace AccessManagement.Services.Injection
 {
@@ -60,6 +62,7 @@ namespace AccessManagement.Services.Injection
     });
             services.AddTransient<IJwtService, JwtService>();
             services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IPermissionHelper, PermissionHelper>();
             services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(RevokeTokenHandler).Assembly));
 
             return services;

@@ -1,7 +1,9 @@
 ﻿
+using AccessManagement.Data;
 using AccessManagement.Entities;
 using Base.Shared;
 using Base.Shared.ResultUtility;
+using IAM_Services.Services.User;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -14,7 +16,7 @@ using System.Text;
 
 
 namespace AccessManagement.Services;
-    public record LoginUserCommandRequest : IRequest<ResultOperation<LoginResponse>>
+public record LoginUserCommandRequest : IRequest<ResultOperation<LoginResponse>>
     {
          [Required(ErrorMessage = "User Name is required")]
          public string? Username { get; set; }
@@ -26,18 +28,19 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, 
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly RoleManager<RoleEntity> _roleManager;
-    
+    private readonly IAccessManagementDbContext context;
     private readonly ITokenService _tokenService;
-    
+
 
     public LoginUserCommandHandler(UserManager<UserEntity> userManager
         , RoleManager<RoleEntity> roleManager
-        , ITokenService tokenService)
+        , ITokenService tokenService,
+IAccessManagementDbContext context)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _tokenService = tokenService;
-   
+        this.context = context;
     }
 
 
@@ -66,18 +69,22 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, 
                 authClaims.Add(item);
             }
             var tokenResult = _tokenService.GetAuthTokenResult(authClaims);
+
+         
             
-            
-            user.RefreshToken = tokenResult.RefreshToken;
-            var refreshTokenExpireTime = tokenResult.RefreshTokenExpires;
-            user.RefreshTokenExpireTime = refreshTokenExpireTime;
-            await _userManager.UpdateAsync(user);
+
+            await context.UserTokens.AddAsync(new UserTokenEntity
+            {
+                RefreshTokenHash = tokenResult.RefreshToken,
+                RefreshTokenExp = tokenResult.RefreshTokenExpires
+            });
+            await context.SaveChangesAsync();
             var loginResponse =
             new LoginResponse
             {
                 Token = tokenResult.AccessToken,
                 TokenExpireTime = tokenResult.AccessTokenExpires.ToString(),
-                RefreshTokenExpireTime = refreshTokenExpireTime.ToString() ,
+                RefreshTokenExpireTime = tokenResult.RefreshTokenExpires.ToString() ,
                 RefreshToken = tokenResult.RefreshToken
             };
             return loginResponse.ToSuccessResult();

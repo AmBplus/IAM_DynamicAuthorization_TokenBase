@@ -4,6 +4,7 @@ using AccessManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IAM_Persistence.Migrations
 {
     [DbContext(typeof(AccessManagementDbContext))]
-    partial class AccessManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231001110020_ChangeEntitiy1")]
+    partial class ChangeEntitiy1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,12 +114,12 @@ namespace IAM_Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ParentId")
+                    b.Property<int>("ParrentId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("ParrentId");
 
                     b.ToTable("MenuGroupEntities");
                 });
@@ -512,13 +515,13 @@ namespace IAM_Persistence.Migrations
 
             modelBuilder.Entity("AccessManagement.Entities.MenuGroupEntity", b =>
                 {
-                    b.HasOne("AccessManagement.Entities.MenuGroupEntity", "Parent")
+                    b.HasOne("AccessManagement.Entities.MenuGroupEntity", "Parrent")
                         .WithMany("SubMenus")
-                        .HasForeignKey("ParentId")
+                        .HasForeignKey("ParrentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Parent");
+                    b.Navigation("Parrent");
                 });
 
             modelBuilder.Entity("AccessManagement.Entities.PermissionEntity", b =>
