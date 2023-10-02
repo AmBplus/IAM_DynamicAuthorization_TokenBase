@@ -10,6 +10,9 @@ using AccessManagement.Services.Injection;
 using AccessManagement.Controllers;
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication;
+using MediatR;
+using AccessManagement.Services.Permission.Command;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.BootstrapServices(builder.Configuration);
@@ -56,6 +59,21 @@ builder.Services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandle
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
 var app = builder.Build();
+
+bool flag = false;
+if(flag)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>;
+        await mediator.Invoke().Send(new UpdatePermissionByAssemblyCommandRequest()
+        {
+            IsEnable = true
+        });
+    }
+}
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

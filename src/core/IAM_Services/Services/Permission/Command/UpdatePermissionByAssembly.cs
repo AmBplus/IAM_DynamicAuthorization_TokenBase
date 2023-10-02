@@ -10,8 +10,9 @@ using System.Threading.Tasks;
 
 namespace AccessManagement.Services.Permission.Command
 {
-    public class UpdatePermissionByAssemblyCommandRequest : IRequest<ResultOperation>
+    public record UpdatePermissionByAssemblyCommandRequest : IRequest<ResultOperation>
     {
+        public bool IsEnable { get; set; } = false;
     }
     public class UpdatePermissionByAssemblyCommandHandler : IRequestHandler<UpdatePermissionByAssemblyCommandRequest, ResultOperation>
     {
@@ -26,8 +27,9 @@ namespace AccessManagement.Services.Permission.Command
 
         public async Task<ResultOperation> Handle(UpdatePermissionByAssemblyCommandRequest request, CancellationToken cancellationToken)
         {
+            if (request.IsEnable == false) return ResultOperation.ToSuccessResult("بروزرسانی خودرکار مجوز ها فعال نیست");
             var result =  await permissionHelper.GetInfo();
-            if(result == null) { throw new Exception("Unvalid Exception"); }
+            if(result == null) { throw new Exception("UnValid Exception"); }
 
             var ActionsByGroup = result.GroupBy(x => x.ControllerName);
 
@@ -44,13 +46,28 @@ namespace AccessManagement.Services.Permission.Command
                         await CheckExitOrAddGroup($"{groupName}");
                         flag = true;
                     }
-                    await CheckExitPermissionOrCreate(groupName ,)  
+                    await CheckExitPermissionOrCreate(groupName, action.ActionName);  
 
                 }
 
                
             }
-            throw new NotImplementedException();    
+            return ResultOperation.ToSuccessResult();   
+        }
+
+        private async Task CheckExitPermissionOrCreate(string groupName, string actionName)
+        {
+           var group = await context.GroupPermissions.Where(x => x.Name.Contains(groupName)).FirstOrDefaultAsync();
+            if (group == null) throw new Exception("UnValid Operation");
+            var permissionName = $"{groupName}:{actionName}";
+            if (context.Permissions.Any(x => x.Name.Contains(permissionName)))  return;
+            await context.Permissions.AddAsync(new Entities.PermissionEntity
+            {
+                ActionName = actionName,
+                Name = permissionName,
+                GroupPermission = group,
+            });
+            await context.SaveChangesAsync();
         }
 
         private async Task CheckExitOrAddGroup(string groupName)
@@ -61,6 +78,7 @@ namespace AccessManagement.Services.Permission.Command
                 {
                     Name = groupName,
                 });
+                await context.SaveChangesAsync();
             }
             
         }
