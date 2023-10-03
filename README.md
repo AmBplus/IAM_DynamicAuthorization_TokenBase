@@ -1,4 +1,4 @@
-# Identity And Access Mangement 
+#Identity And Access Mangement 
 #DynamicAuthorization_Jwt Token 
 
 Access Management With Asp.net Core 7 , Dynamic Athorization Web Api With Clean Architecture 
