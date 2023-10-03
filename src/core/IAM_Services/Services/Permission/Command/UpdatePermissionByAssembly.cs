@@ -1,12 +1,15 @@
 ﻿using AccessManagement.Data;
+using AccessManagement.Entities;
 using Base.Shared.ResultUtility;
 using MediatR;
+using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace AccessManagement.Services.Permission.Command
 {
@@ -30,57 +33,75 @@ namespace AccessManagement.Services.Permission.Command
             if (request.IsEnable == false) return ResultOperation.ToSuccessResult("بروزرسانی خودرکار مجوز ها فعال نیست");
             var result =  await permissionHelper.GetInfo();
             if(result == null) { throw new Exception("UnValid Exception"); }
-
-            var ActionsByGroup = result.GroupBy(x => x.ControllerName);
-
-            foreach (var item in ActionsByGroup)
+    
+            // Group by namespace
+            var actionsByNamespace = result.GroupBy(x => x.NameSpace);
+            
+            foreach (var systemGroup in actionsByNamespace)
             {
-                bool flag = false;
-                
-                foreach (var action in item) 
+                var system = await CheckExitOrAddSystem(systemGroup.Key);
+                // Group by controller name
+                var controllers = systemGroup.GroupBy(x => x.ControllerName);
+
+                foreach (var controllerGroup in controllers)
                 {
-                    var groupName = $"{action.ControllerNameSpace}:{action.ControllerName}";
-                    if (!flag ) {
+                    // Add system if needed
+                    var group = await CheckExitOrAddGroup(systemGroup.Key);
 
-                        
-                        await CheckExitOrAddGroup($"{groupName}");
-                        flag = true;
+                    // Loop through actions
+                    foreach (var action in controllerGroup)
+                    {
+                           await CheckExitPermissionOrCreate(system,group, action.ActionName);
                     }
-                    await CheckExitPermissionOrCreate(groupName, action.ActionName);  
-
                 }
-
-               
             }
             return ResultOperation.ToSuccessResult();   
         }
 
-        private async Task CheckExitPermissionOrCreate(string groupName, string actionName)
+        private async Task<SystemEntity> CheckExitOrAddSystem(string systemName)
         {
-           var group = await context.GroupPermissions.Where(x => x.Name.Contains(groupName)).FirstOrDefaultAsync();
-            if (group == null) throw new Exception("UnValid Operation");
-            var permissionName = $"{groupName}:{actionName}";
+            var system = await context.SystemEntities.Where(x => x.Name.Contains(systemName)).FirstOrDefaultAsync();
+            if (system != null) return system;
+           
+           
+            await context.SystemEntities.AddAsync(new Entities.SystemEntity
+            {
+            Name = systemName
+            });
+            await context.SaveChangesAsync();
+            system = await context.SystemEntities.Where(x => x.Name.Contains(systemName)).FirstOrDefaultAsync();
+            if(system == null) throw new Exception("خطای سیستمی ، گروه سیستم نباید خالی یا نال باشد");
+            return system;
+        }
+
+        private async Task CheckExitPermissionOrCreate(SystemEntity system, GroupPermissionEntity groupPermission,string actionName)
+        {
+            var permissionName = $"{system.Name}{groupPermission.Name}:{actionName}";
             if (context.Permissions.Any(x => x.Name.Contains(permissionName)))  return;
             await context.Permissions.AddAsync(new Entities.PermissionEntity
             {
                 ActionName = actionName,
                 Name = permissionName,
-                GroupPermission = group,
+                GroupPermission = groupPermission,
+                System = system 
             });
             await context.SaveChangesAsync();
         }
 
-        private async Task CheckExitOrAddGroup(string groupName)
+        private async Task<GroupPermissionEntity> CheckExitOrAddGroup(string groupName)
         {
-            if(!await context.GroupPermissions.AnyAsync(x=>x.Name.Contains(groupName)))
-            {
+            var group = await context.GroupPermissions.Where(x => x.Name.Contains(groupName)).FirstOrDefaultAsync();
+            if (group != null) return group;
+
+            
                 await context.GroupPermissions.AddAsync(new Entities.GroupPermissionEntity
                 {
                     Name = groupName,
                 });
                 await context.SaveChangesAsync();
-            }
-            
+            group= await context.GroupPermissions.Where(x => x.Name.Contains(groupName)).FirstOrDefaultAsync();
+            if(group == null) throw new Exception("خطای سیستمی ، گروه محوز ها نمی تواند خالی یا نال باشد");
+            return group;
         }
     }
     public interface IPermissionHelper
@@ -90,7 +111,7 @@ namespace AccessManagement.Services.Permission.Command
     public record GetControllerInfoForPermission
     {
         public string ControllerName { get; set; }
-        public string ControllerNameSpace { get; set; }
+        public string NameSpace { get; set; }
         public string ControllerActions { get; set; }
         public string ActionRequest { get; set; }
         public string ActionRoute { get; set; }

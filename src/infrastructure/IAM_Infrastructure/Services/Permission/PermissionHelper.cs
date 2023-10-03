@@ -29,7 +29,7 @@ namespace AccessManagement.Services.Permission
          {
 
              ControllerName = c.ControllerName,
-             ControllerNameSpace = c?.ControllerTypeInfo?.Namespace,
+             NameSpace = c?.ControllerTypeInfo?.Namespace,
              ControllerActions = c?.MethodInfo?.Name,
              ActionRequest = string.Join(", ", c.ActionConstraints.Select(ac => ac.GetType().Name.Replace("Attribute", ""))),
              ActionRoute = c.AttributeRouteInfo?.Template,
