@@ -33,6 +33,8 @@
 //}
 // **************************************************
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 namespace Infrastructure.Security;
 
 public static class Constants : object
@@ -44,8 +46,7 @@ public static class Constants : object
 	public static class Scheme : object
 	{
 		public const string Default =
-			Microsoft.AspNetCore.Authentication.Cookies
-			.CookieAuthenticationDefaults.AuthenticationScheme;
+            JwtBearerDefaults.AuthenticationScheme;
 
 		static Scheme()
 		{

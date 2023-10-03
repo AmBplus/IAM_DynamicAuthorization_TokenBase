@@ -35,7 +35,7 @@ namespace AccessManagement.Services.Permission
              ActionRoute = c.AttributeRouteInfo?.Template,
              ControllerRoute = c.RouteValues["controller"],
              ActionName = c.ActionName
-         })
+         }) 
          .ToList();
 
         }
