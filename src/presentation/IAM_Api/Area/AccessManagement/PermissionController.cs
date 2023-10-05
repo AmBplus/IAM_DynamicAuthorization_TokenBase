@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccessManagement.Controllers
 {
@@ -57,6 +58,8 @@ namespace AccessManagement.Controllers
         /// <returns></returns>
         [Route("AddPermissionToRole")]
         [HttpPost]
+        [Authorize("")]
+       
         public async Task<IActionResult> AddPermissionToRole([FromBody]AddPermissionToRoleCommandRequest request)
         {
             var result = await Mediator.Send(request);

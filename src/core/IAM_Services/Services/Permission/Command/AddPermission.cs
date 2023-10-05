@@ -2,6 +2,7 @@
 using AccessManagement.Entities;
 using Base.Shared.ResultUtility;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,16 +28,17 @@ namespace AccessManagement.Services.Permission.Command
         public async Task<ResultOperation> Handle(AddPermissionCommandRequest request, CancellationToken cancellationToken)
         {
 
-            var groupName = Context.GroupPermissions.SingleOrDefault(x => x.Name == request.GroupName);
-            if (groupName == null) { throw new Exception("گروه پیدا نشد"); }
-            var systemName = Context.SystemEntities.SingleOrDefault(x => x.Name == request.SystemName);
-            if (systemName == null) { throw new Exception("گروه پیدا نشد"); }
+            var groupPermission = await Context.GroupPermissions.SingleOrDefaultAsync(x => x.Name == request.GroupName);
+            if (groupPermission == null) { throw new Exception("گروه پیدا نشد"); }
+            var system = await Context.SystemEntities.SingleOrDefaultAsync(x => x.Name == request.SystemName);
+            if (system == null) { throw new Exception("گروه پیدا نشد"); }
             Context.Permissions.Add(new Entities.PermissionEntity
             {
                 ActionName = request.Action,
-                
-                GroupPermission = groupName,
-                Name = $"{request.GroupName}:{request.Action}",
+                System = system,
+               
+                GroupPermission = groupPermission,
+                Name = $"{system.Name}{groupPermission.Name}:{request.Action}",
 
 
             });

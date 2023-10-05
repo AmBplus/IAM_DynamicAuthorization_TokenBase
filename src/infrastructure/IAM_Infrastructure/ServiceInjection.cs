@@ -17,6 +17,10 @@ using System.Text;
 using System.Threading.Tasks;
 using AccessManagement.Services.Permission.Command;
 using AccessManagement.Services.Permission;
+using AccessManagement.SeedData;
+using Microsoft.AspNetCore.Authorization;
+using Infrastructure.Security;
+using Features.Common;
 
 namespace AccessManagement.Services.Injection
 {
@@ -60,10 +64,28 @@ namespace AccessManagement.Services.Injection
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
         };
     });
+            // using Microsoft.Extensions.DependencyInjection;
+            services
+                .AddHttpContextAccessor();
+            // **************************************************
+
+            // **************************************************
+            services.AddScoped
+                <Features.Common.HttpContextService>();
+            // **************************************************
+
+            // **************************************************
+            services.AddScoped
+                <AuthenticatedUserService>();
+            // **************************************************
+
             services.AddTransient<IJwtService, JwtService>();
             services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IPermissionHelper, PermissionHelper>();
             services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(RevokeTokenHandler).Assembly));
+            services.AddTransient<AuthenticatedUserService>();
+         
+            services.AddScoped<SeedInitialData>();
 
             return services;
         }

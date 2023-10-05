@@ -1,6 +1,7 @@
 ﻿using AccessManagement.Services;
 
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,7 @@ public class AuthenticateController : ApiBaseController
     [HttpPost]
    
     [Route("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginUserCommandRequest model)
     {
       var result =  await _mediator.Send(model);
@@ -37,6 +39,7 @@ public class AuthenticateController : ApiBaseController
 
     [HttpPost]
     [Route("register")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterCommandRequest model)
     {
       var result =  await  _mediator.Send(model);

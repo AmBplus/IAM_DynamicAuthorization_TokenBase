@@ -28,7 +28,8 @@ public HasRolePermissionCommandHandler(IAccessManagementDbContext context)
     {
 
         var role = await Context.Roles
-            .Where(x => x.Name == request.RoleName).Include(x => x.Permissions).SingleOrDefaultAsync();
+            .Where(x => x.Name == request.RoleName)
+            .Include(x => x.Permissions).SingleOrDefaultAsync();
         if(role == null)
         {
             throw new Exception("UnValid Request");

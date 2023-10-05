@@ -20,6 +20,7 @@
   <ItemGroup>
     <Folder Include="Services\Role\Command\" />
     <Folder Include="Services\Role\Query\" />
+    <Folder Include="Services\System\Query\" />
   </ItemGroup>
 
 </Project>

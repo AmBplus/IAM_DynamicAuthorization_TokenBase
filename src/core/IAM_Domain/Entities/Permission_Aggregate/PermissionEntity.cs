@@ -15,6 +15,7 @@ namespace AccessManagement.Entities
 
         public SystemEntity? System { get; set; }
         public int? SystemId { get; set; }
-
+        public List<UserEntity> Users { get; set; }
+        public List<RoleEntity> Roles { get; set; }  
     }
 }

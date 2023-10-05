@@ -67,7 +67,7 @@ public class CustomAuthorizeAttribute : System.Attribute,
 
 		// **************************************************
 		var httpContextService = services.GetService
-			<Services.Features.Common.HttpContextService>();
+			<Features.Common.HttpContextService>();
 
 		if (httpContextService == null)
 		{
@@ -157,6 +157,7 @@ public class CustomAuthorizeAttribute : System.Attribute,
            context.Result = new Microsoft.AspNetCore.Mvc.ForbidResult();
             return;
         }
+
         return;
     }
 

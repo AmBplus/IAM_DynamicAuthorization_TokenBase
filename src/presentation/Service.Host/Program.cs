@@ -1,4 +1,4 @@
-using AccessManagement.Authorizations;
+
 
 using Base.Shared.ResultUtility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,19 +13,21 @@ using Microsoft.AspNetCore.Authentication;
 using MediatR;
 using AccessManagement.Services.Permission.Command;
 using Infrastructure.Security;
+using AccessManagement.SeedData;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.BootstrapServices(builder.Configuration);
 // Add services to the container.
 
-builder.Services.AddControllers(x=>x.Filters.Add(new CustomAuthorizeAttribute()))
+builder.Services.AddControllers
+    (x=>x.Filters.Add(new CustomAuthorizeAttribute()))
 .
   AddApplicationPart(typeof(AuthenticateController).GetTypeInfo().Assembly).AddControllersAsServices()
  
     ; 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {
@@ -57,17 +59,20 @@ builder.Services.AddSwaggerGen(opt =>
 });
 
 
-builder.Services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
 var app = builder.Build();
+app.UseDeveloperExceptionPage();    
 
-bool flag = false;
-if(flag)
+
+bool flag = true;
+if (flag)
 {
     using (var scope = app.Services.CreateScope())
     {
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>;
+        var seeDataClass = scope.ServiceProvider.GetRequiredService<SeedInitialData>;
+
+       // await seeDataClass.Invoke().Initial();
         await mediator.Invoke().Send(new UpdatePermissionByAssemblyCommandRequest()
         {
             IsEnable = true
@@ -75,14 +80,13 @@ if(flag)
     }
 }
 
-
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

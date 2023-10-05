@@ -8,3 +8,4 @@ public class RolePermissionEntity
    
     public List<RoleEntity> Roles { get; set; }
 }
+public class TPermission

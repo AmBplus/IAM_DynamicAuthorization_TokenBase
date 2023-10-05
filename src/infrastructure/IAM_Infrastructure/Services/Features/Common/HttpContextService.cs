@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Services.Features.Common;
+namespace Features.Common;
 
 public class HttpContextService : object
 {
