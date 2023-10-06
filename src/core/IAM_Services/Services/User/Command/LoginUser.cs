@@ -55,8 +55,8 @@ IAccessManagementDbContext context)
 
             var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName ),
+                    new Claim(ClaimTypes.Email, user?.Email),
                 
                 };
 
@@ -76,7 +76,8 @@ IAccessManagementDbContext context)
             await context.UserTokens.AddAsync(new UserTokenEntity
             {
                 RefreshTokenHash = tokenResult.RefreshToken,
-                RefreshTokenExp = tokenResult.RefreshTokenExpires
+                RefreshTokenExp = tokenResult.RefreshTokenExpires,
+                LoginProvider = "OnSelfApplication"
             });
             await context.SaveChangesAsync();
             var loginResponse =

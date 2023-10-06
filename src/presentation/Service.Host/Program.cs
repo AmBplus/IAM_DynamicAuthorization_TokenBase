@@ -64,27 +64,55 @@ var app = builder.Build();
 app.UseDeveloperExceptionPage();    
 
 
-bool flag = true;
-if (flag)
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>;
-        var seeDataClass = scope.ServiceProvider.GetRequiredService<SeedInitialData>;
-
-       // await seeDataClass.Invoke().Initial();
-        await mediator.Invoke().Send(new UpdatePermissionByAssemblyCommandRequest()
-        {
-            IsEnable = true
-        });
-    }
-}
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+bool flagForSeed = true;
+if (flagForSeed)
+{
+    try
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+
+            var seeDataClass = scope.ServiceProvider.GetRequiredService<SeedInitialData>;
+            await seeDataClass.Invoke().Initial();
+
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message, e.InnerException?.Message);
+        throw;
+    }
+}
+bool flagForUpdatePermission = false;
+if (flagForUpdatePermission)
+{
+    try
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>;
+            var seeDataClass = scope.ServiceProvider.GetRequiredService<SeedInitialData>;
+
+            // await seeDataClass.Invoke().Initial();
+            await mediator.Invoke().Send(new UpdatePermissionByAssemblyCommandRequest()
+            {
+                IsEnable = true
+            });
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message, e.InnerException?.Message);
+        throw;
+     
+    }
 }
 
 

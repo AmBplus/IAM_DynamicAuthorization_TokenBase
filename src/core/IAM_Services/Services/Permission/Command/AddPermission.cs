@@ -38,7 +38,7 @@ namespace AccessManagement.Services.Permission.Command
                 System = system,
                
                 GroupPermission = groupPermission,
-                Name = $"{system.Name}{groupPermission.Name}:{request.Action}",
+                Name = $"{system.Name}:{groupPermission.Name}:{request.Action}",
 
 
             });

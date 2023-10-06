@@ -3,6 +3,10 @@ namespace AccessManagement.Entities
 {
     public class PermissionEntity : BaseEntity<int>
     {
+        public PermissionEntity() { 
+        Users = new List<UserEntity>(); 
+        Roles = new List<RoleEntity>(); 
+        }   
 
         public bool IsEnabled { get; set; } = true;
         public string Name { get; set; }

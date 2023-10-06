@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccessManagement.Services;
 
@@ -26,8 +27,8 @@ public class AddPermissionToRoleHandler : IRequestHandler<AddPermissionToRoleCom
 
     public async Task<ResultOperation> Handle(AddPermissionToRoleCommandRequest request, CancellationToken cancellationToken)
     {
-        var role = _dbContext.Roles.FirstOrDefault(r => r.Name == request.RoleName);
-        var permission = _dbContext.Permissions.FirstOrDefault(p => p.Name == request.PermissionName);
+        var role = await _dbContext.Roles.Include(x=>x.Permissions).SingleAsync(r => r.Name == request.RoleName);
+        var permission = await _dbContext.Permissions.SingleAsync(p => p.Name.Contains(request.PermissionName));
 
         if (role == null || permission == null)
             throw new Exception("Role or Permission not found");

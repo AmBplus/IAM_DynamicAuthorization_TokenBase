@@ -9,7 +9,9 @@ namespace AccessManagement.Entities
 {
     public class GroupPermissionEntity : BaseEntity<int>
     {
-        
+        public GroupPermissionEntity() {
+            ApplicationPermissions = new List<PermissionEntity>();  
+        }  
         public string Name { get; set; }
         public List<PermissionEntity> ApplicationPermissions { get; set; }
     }
