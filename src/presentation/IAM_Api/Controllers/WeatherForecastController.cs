@@ -41,12 +41,13 @@ public class WeatherForecastController : ControllerBase
         .ToArray();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> GetAll([FromServices]IMediator mediator)
+    [HttpPost("GetAll")]
+    public async Task<IActionResult> GetAll()
     {
+        return Ok("TEst............");
         try
         {
-            await mediator.Send(new UpdatePermissionByAssemblyCommandRequest());
+         //   await mediator.Send(new UpdatePermissionByAssemblyCommandRequest());
         }
         catch (Exception)
         {

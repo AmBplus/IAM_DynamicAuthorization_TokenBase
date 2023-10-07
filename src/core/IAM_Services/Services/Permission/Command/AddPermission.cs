@@ -32,13 +32,15 @@ namespace AccessManagement.Services.Permission.Command
             if (groupPermission == null) { throw new Exception("گروه پیدا نشد"); }
             var system = await Context.SystemEntities.SingleOrDefaultAsync(x => x.Name == request.SystemName);
             if (system == null) { throw new Exception("گروه پیدا نشد"); }
+            var permissionName = $"{system.Name}:{groupPermission.Name}:{request.Action}";
+            if(Context.Permissions.Any(x => x.Name == permissionName)) return ResultOperation.ToFailedResult("Already Exists") ;
             Context.Permissions.Add(new Entities.PermissionEntity
             {
                 ActionName = request.Action,
                 System = system,
                
                 GroupPermission = groupPermission,
-                Name = $"{system.Name}:{groupPermission.Name}:{request.Action}",
+                Name = permissionName 
 
 
             });

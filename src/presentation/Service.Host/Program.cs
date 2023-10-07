@@ -19,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.BootstrapServices(builder.Configuration);
 // Add services to the container.
-
+builder.Services.AddSingleton<ISeedControllerPermission, SeedControllerPermission>();
 builder.Services.AddControllers
     (x=>x.Filters.Add(new CustomAuthorizeAttribute()))
 .

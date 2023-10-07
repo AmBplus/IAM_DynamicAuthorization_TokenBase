@@ -14,28 +14,35 @@ namespace AccessManagement.SeedData
 {
     public class SeedInitialData
     {
-        public SeedInitialData(UserManager<UserEntity> userManager,RoleManager<RoleEntity> roleManager, IMediator mediator)
+        public SeedInitialData(UserManager<UserEntity> userManager
+            ,RoleManager<RoleEntity> roleManager, IMediator mediator
+            ,ISeedControllerPermission seedControllerPermission
+            )
         {
             UserManager = userManager;
             RoleManager = roleManager;
             Mediator = mediator;
+            SeedControllerPermission = seedControllerPermission;
         }
 
         public UserManager<UserEntity> UserManager { get; }
         public RoleManager<RoleEntity> RoleManager { get; }
         public IMediator Mediator { get; }
+        public ISeedControllerPermission SeedControllerPermission { get; }
 
         public async Task Initial()
         {
+            SeedControllerData  seedControllerData = SeedControllerPermission.GetInfo();
             
-            string nameSpace = "AccessManagement.Controllers";
-            string groupPermission = "PermissionController";
-            List<string> actionPermission = new List<string>() {
-            "AddPermissionToRole"
-            };
+            
+
+            
+            
             try
             {
-                await AddPermissionForAddPermissionToRole(nameSpace, groupPermission, actionPermission);
+                
+                    await AddPermissionForAddPermissionToRole(seedControllerData.nameSpace, seedControllerData.GroupPermission, seedControllerData.Actions);
+                
             }
             catch (Exception e)
             {
@@ -57,7 +64,7 @@ namespace AccessManagement.SeedData
 
             try
             {
-                await AddSeedUserAddToRole();
+               await AddSeedUserAddToRole();
             }
             catch (Exception e)
             {
@@ -66,7 +73,7 @@ namespace AccessManagement.SeedData
             }
             try
             {
-                await AddAdminAndProgrammerRoleToPermission(nameSpace, groupPermission, actionPermission);
+                await AddAdminAndProgrammerRoleToPermission(seedControllerData.nameSpace, seedControllerData.GroupPermission, seedControllerData.Actions);
             }
             catch (Exception e)
             {

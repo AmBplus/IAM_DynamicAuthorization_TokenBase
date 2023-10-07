@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Base.Infrastructure.Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,45 +12,65 @@ namespace AccessManagement.Data
 {
     public class DapperAccessManagementDbContext : IDapperAccessManagementDbContext
     {
-        private bool disposedValue;
-
-        public IDbConnection CreateConnection()
+        
+        private readonly string _connectionString;
+        public DapperAccessManagementDbContext(DapperSettings dapperSettings)
         {
-            throw new NotImplementedException();
+            _connectionString = dapperSettings.ConnectionString;
+        }
+        public IDbConnection CreateConnection()
+               => new SqlConnection(_connectionString);
+
+        IDisposable? _disposableResource = new MemoryStream();
+        IAsyncDisposable? _asyncDisposableResource = new MemoryStream();
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
-        public ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            throw new NotImplementedException();
+            await DisposeAsyncCore().ConfigureAwait(false);
+
+            Dispose(disposing: false);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects)
-                }
+                _disposableResource?.Dispose();
+                _disposableResource = null;
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
+                if (_asyncDisposableResource is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                    _asyncDisposableResource = null;
+                }
             }
         }
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~DapperAccessManagementDbContext()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
-        public void Dispose()
+        protected virtual async ValueTask DisposeAsyncCore()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            if (_asyncDisposableResource is not null)
+            {
+                await _asyncDisposableResource.DisposeAsync().ConfigureAwait(false);
+            }
+
+            if (_disposableResource is IAsyncDisposable disposable)
+            {
+                await disposable.DisposeAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                _disposableResource?.Dispose();
+            }
+
+            _asyncDisposableResource = null;
+            _disposableResource = null;
         }
     }
 }

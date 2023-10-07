@@ -21,6 +21,7 @@ using AccessManagement.SeedData;
 using Microsoft.AspNetCore.Authorization;
 using Infrastructure.Security;
 using Features.Common;
+using AccessManagement.Services.Facade;
 
 namespace AccessManagement.Services.Injection
 {
@@ -29,13 +30,16 @@ namespace AccessManagement.Services.Injection
         public static IServiceCollection BootstrapServices(this IServiceCollection services,IConfiguration configuration)
 
         {
+           
             // Add jwtSettings To IOC
             var jwtSettings = new JwtSettings();
             configuration.Bind("JWT", jwtSettings);
             services.AddSingleton(jwtSettings);
             // Get Connection String
             var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
+            services.AddSingleton<DapperSettings>(new DapperSettings(connectionString));
+            services.AddScoped<IDapperAccessManagementDbContext,
+                DapperAccessManagementDbContext>();
             //// Add Db Context
             //services.AddDbContext< AccessManagementDbContext>(options =>
             //    options.UseSqlServer(connectionString));
@@ -84,9 +88,10 @@ namespace AccessManagement.Services.Injection
             services.AddTransient<IPermissionHelper, PermissionHelper>();
             services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(RevokeTokenHandler).Assembly));
             services.AddTransient<AuthenticatedUserService>();
-         
+            
             services.AddScoped<SeedInitialData>();
 
+            services.AddScoped<IPermissionFacade, PermissionFacade>();
             return services;
         }
     }
