@@ -98,9 +98,7 @@ if (flagForUpdatePermission)
         using (var scope = app.Services.CreateScope())
         {
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>;
-            var seeDataClass = scope.ServiceProvider.GetRequiredService<SeedInitialData>;
-
-            // await seeDataClass.Invoke().Initial();
+            
             await mediator.Invoke().Send(new UpdatePermissionByAssemblyCommandRequest()
             {
                 IsEnable = true

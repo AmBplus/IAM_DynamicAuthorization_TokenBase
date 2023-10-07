@@ -107,7 +107,7 @@ public class TokenService : ITokenService
 
     public AuthResponse GetAuthTokenResult(IEnumerable<Claim> claims)
     {
-        var token  = jwtService.GenerateToken(claims);
+       var token  = jwtService.GenerateToken(claims);
         var refreshToken = GenerateRefreshToken();
         return new AuthResponse()
         {

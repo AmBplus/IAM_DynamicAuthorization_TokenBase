@@ -15,6 +15,7 @@ namespace AccessManagement.Data
         public DbSet<RoleEntity> Roles { get; set; }
         public DbSet<PermissionEntity> Permissions { get; set; }
         
+        public DbSet<AspIdentityUserToken> AspIdentityUserTokens { get; set; }
         public DbSet<UserTokenEntity> UserTokens { get; set; }
         public DbSet<UserClaimEntity> UserClaims { get; set; }
         public DbSet<RoleClaimEntity> RoleClaims { get; }

@@ -77,7 +77,7 @@ IAccessManagementDbContext context)
             {
                 RefreshTokenHash = tokenResult.RefreshToken,
                 RefreshTokenExp = tokenResult.RefreshTokenExpires,
-                LoginProvider = "OnSelfApplication"
+                
             });
             await context.SaveChangesAsync();
             var loginResponse =
