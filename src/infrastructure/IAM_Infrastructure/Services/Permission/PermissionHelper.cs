@@ -39,5 +39,9 @@ namespace AccessManagement.Services.Permission
          .ToList();
 
         }
+        public string GetPermissionName(string system,string groupName ,string  actionName) 
+        {
+            return $"{system}:{groupName}:{actionName}";
+        }
     }
 }

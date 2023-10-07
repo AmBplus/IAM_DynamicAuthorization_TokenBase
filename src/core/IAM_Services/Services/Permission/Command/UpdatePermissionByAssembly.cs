@@ -46,7 +46,7 @@ namespace AccessManagement.Services.Permission.Command
                 foreach (var controllerGroup in controllers)
                 {
                     // Add system if needed
-                    var group = await CheckExitOrAddGroup(systemGroup.Key);
+                    var group = await CheckExitOrAddGroup(controllerGroup.Key);
 
                     // Loop through actions
                     foreach (var action in controllerGroup)
@@ -60,7 +60,9 @@ namespace AccessManagement.Services.Permission.Command
 
         private async Task<SystemEntity> CheckExitOrAddSystem(string systemName)
         {
-            var system = await context.SystemEntities.Where(x => x.Name.Contains(systemName)).FirstOrDefaultAsync();
+            var system = await context.SystemEntities
+                .Where(x => x.Name.Contains(systemName))
+                .FirstOrDefaultAsync();
             if (system != null) return system;
            
            
@@ -69,14 +71,16 @@ namespace AccessManagement.Services.Permission.Command
             Name = systemName
             });
             await context.SaveChangesAsync();
-            system = await context.SystemEntities.Where(x => x.Name.Contains(systemName)).FirstOrDefaultAsync();
+            system = await context.SystemEntities.
+                Where(x => x.Name.Contains(systemName))
+                .FirstOrDefaultAsync();
             if(system == null) throw new Exception("خطای سیستمی ، گروه سیستم نباید خالی یا نال باشد");
             return system;
         }
 
         private async Task CheckExitPermissionOrCreate(SystemEntity system, GroupPermissionEntity groupPermission,string actionName)
         {
-            var permissionName = $"{system.Name}{groupPermission.Name}:{actionName}";
+            var permissionName = permissionHelper.GetPermissionName(system.Name,groupPermission.Name,actionName);
             if (context.Permissions.Any(x => x.Name.Contains(permissionName)))  return;
             await context.Permissions.AddAsync(new Entities.PermissionEntity
             {
@@ -90,16 +94,24 @@ namespace AccessManagement.Services.Permission.Command
 
         private async Task<GroupPermissionEntity> CheckExitOrAddGroup(string groupName)
         {
-            var group = await context.GroupPermissions.Where(x => x.Name.Contains(groupName)).FirstOrDefaultAsync();
+            var group = await context.GroupPermissions
+                .Where(x => x.Name.Contains(groupName))
+                .FirstOrDefaultAsync();
             if (group != null) return group;
 
             
-                await context.GroupPermissions.AddAsync(new Entities.GroupPermissionEntity
+                await context.GroupPermissions.AddAsync
+               
+                (new Entities.GroupPermissionEntity
                 {
                     Name = groupName,
                 });
                 await context.SaveChangesAsync();
-            group= await context.GroupPermissions.Where(x => x.Name.Contains(groupName)).FirstOrDefaultAsync();
+
+            group= await context.GroupPermissions
+
+                .Where(x => x.Name.Contains(groupName))
+                .FirstOrDefaultAsync();
             if(group == null) throw new Exception("خطای سیستمی ، گروه محوز ها نمی تواند خالی یا نال باشد");
             return group;
         }
@@ -107,6 +119,7 @@ namespace AccessManagement.Services.Permission.Command
     public interface IPermissionHelper
     {
         public Task<List<GetControllerInfoForPermission>> GetInfo();
+        public string GetPermissionName(string system, string groupName, string actionName);
     }
     public record GetControllerInfoForPermission
     {

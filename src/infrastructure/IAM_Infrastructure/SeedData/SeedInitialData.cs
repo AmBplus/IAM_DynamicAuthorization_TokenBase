@@ -27,7 +27,7 @@ namespace AccessManagement.SeedData
 
         public async Task Initial()
         {
-
+            
             string nameSpace = "AccessManagement.Controllers";
             string groupPermission = "PermissionController";
             List<string> actionPermission = new List<string>() {

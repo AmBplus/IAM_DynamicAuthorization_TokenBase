@@ -1,6 +1,7 @@
 ﻿
 using AccessManagement.Data;
 using AccessManagement.Entities;
+using AccessManagement.Helper;
 using Base.Shared;
 using Base.Shared.ResultUtility;
 using IAM_Services.Services.User;
@@ -23,7 +24,9 @@ public record LoginUserCommandRequest : IRequest<ResultOperation<LoginResponse>>
 
          [Required(ErrorMessage = "Password is required")]
          public string? Password { get; set; }
+
     }
+
 public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, ResultOperation<LoginResponse>>
 {
     private readonly UserManager<UserEntity> _userManager;
@@ -72,14 +75,21 @@ IAccessManagementDbContext context)
 
          
             
-
+            
             await context.UserTokens.AddAsync(new UserTokenEntity
             {
                 RefreshTokenHash = tokenResult.RefreshToken,
                 RefreshTokenExp = tokenResult.RefreshTokenExpires,
+                Id = Guid.NewGuid(),
+                User = user,
+                UserId = user.Id,
+                TokenExp = tokenResult.AccessTokenExpires,
+                TokenHash = SecurityHelper.Getsha256Hash( tokenResult.AccessToken),
+                Device = "Test"
+                
                 
             });
-            await context.SaveChangesAsync();
+           await context.SaveChangesAsync();
             var loginResponse =
             new LoginResponse
             {

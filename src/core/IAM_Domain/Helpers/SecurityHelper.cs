@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace AccessManagement.Helper
 {
-    public class SecurityHelper
+    public  static class SecurityHelper
     {
 
-        private readonly RandomNumberGenerator random = RandomNumberGenerator.Create();
-        public string Getsha256Hash(string value)
+        
+        public static string Getsha256Hash(string value)
         {
-            var algoritm = new SHA256CryptoServiceProvider();
+            RandomNumberGenerator random = RandomNumberGenerator.Create();
+            var algorithm = new SHA256CryptoServiceProvider();
             var byteValue = Encoding.UTF8.GetBytes(value);
-            var byteHash = algoritm.ComputeHash(byteValue);
+            var byteHash = algorithm.ComputeHash(byteValue);
             return Convert.ToBase64String(byteHash);
         }
     }

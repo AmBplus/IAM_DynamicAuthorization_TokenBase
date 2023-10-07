@@ -71,7 +71,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-bool flagForSeed = true;
+bool flagForSeed = false;
 if (flagForSeed)
 {
     try
@@ -90,7 +90,7 @@ if (flagForSeed)
         throw;
     }
 }
-bool flagForUpdatePermission = false;
+bool flagForUpdatePermission = true;
 if (flagForUpdatePermission)
 {
     try
