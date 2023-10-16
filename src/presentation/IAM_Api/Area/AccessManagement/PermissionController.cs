@@ -71,10 +71,10 @@ namespace AccessManagement.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [Route("GetPermissionGroups")]
-        [HttpPost]
-        public async Task<IActionResult> GetPermissionGroups([FromBody] GetAllPermissionGroupQueryRequest request)
+        [HttpGet]
+        public async Task<IActionResult> GetPermissionGroups()
         {
-            var result = await Mediator.Send(request);
+            var result = await Mediator.Send(new GetAllPermissionGroupQueryRequest());
             return Ok(result);
         }
 

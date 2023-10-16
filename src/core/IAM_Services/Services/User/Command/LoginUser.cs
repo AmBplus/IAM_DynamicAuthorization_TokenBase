@@ -1,9 +1,10 @@
 ﻿
 using AccessManagement.Data;
 using AccessManagement.Entities;
-using AccessManagement.Helper;
+
 using Base.Shared;
 using Base.Shared.ResultUtility;
+using Base.Shared.Security;
 using IAM_Services.Services.User;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -18,14 +19,14 @@ using System.Text;
 
 namespace AccessManagement.Services;
 public record LoginUserCommandRequest : IRequest<ResultOperation<LoginResponse>>
-    {
-         [Required(ErrorMessage = "User Name is required")]
-         public string? Username { get; set; }
+{
+    [Required(ErrorMessage = "User Name is required")]
+    public string? Username { get; set; }
 
-         [Required(ErrorMessage = "Password is required")]
-         public string? Password { get; set; }
+    [Required(ErrorMessage = "Password is required")]
+    public string? Password { get; set; }
 
-    }
+}
 
 public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, ResultOperation<LoginResponse>>
 {
@@ -50,17 +51,17 @@ IAccessManagementDbContext context)
 
     public async Task<ResultOperation<LoginResponse>> Handle(LoginUserCommandRequest model, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByNameAsync(model.Username);
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+        var user = await _userManager.FindByNameAsync(model.Username.Trim().ToString());
+        if (user != null && await _userManager.CheckPasswordAsync(user, model?.Password?.Trim()?.ToString())) ;
         {
             var userRoles = await _userManager.GetRolesAsync(user);
-            var userClaim = await _userManager.GetClaimsAsync(user);    
+            var userClaim = await _userManager.GetClaimsAsync(user);
 
             var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName ),
                     new Claim(ClaimTypes.Email, user?.Email),
-                
+
                 };
 
             foreach (var userRole in userRoles)
@@ -73,35 +74,35 @@ IAccessManagementDbContext context)
             }
             var tokenResult = _tokenService.GetAuthTokenResult(authClaims);
 
-         
-            
-            
+
+
+
             await context.UserTokens.AddAsync(new UserTokenEntity
             {
-                RefreshTokenHash = tokenResult.RefreshToken,
+                RefreshTokenHash = HashHelper.GetSha256(tokenResult.RefreshToken),
                 RefreshTokenExp = tokenResult.RefreshTokenExpires,
                 Id = Guid.NewGuid(),
                 User = user,
                 UserId = user.Id,
                 TokenExp = tokenResult.AccessTokenExpires,
-                TokenHash = SecurityHelper.Getsha256Hash( tokenResult.AccessToken),
+                TokenHash = HashHelper.GetSha256(tokenResult.AccessToken),
                 Device = "Test"
-                
-                
+
+
             });
-           await context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             var loginResponse =
             new LoginResponse
             {
                 Token = tokenResult.AccessToken,
                 TokenExpireTime = tokenResult.AccessTokenExpires.ToString(),
-                RefreshTokenExpireTime = tokenResult.RefreshTokenExpires.ToString() ,
+                RefreshTokenExpireTime = tokenResult.RefreshTokenExpires.ToString(),
                 RefreshToken = tokenResult.RefreshToken
             };
             return loginResponse.ToSuccessResult();
         }
         //  return Unauthorized();
-        return ResultOperation<LoginResponse>.ToFailedResult();
+        return ResultOperation<LoginResponse>.ToFailedResult("نام کاربری یا رمز عبور تطابق نداشت یا اشتباه است");
 
     }
 }

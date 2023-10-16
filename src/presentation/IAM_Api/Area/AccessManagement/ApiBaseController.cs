@@ -12,13 +12,13 @@ namespace AccessManagement.Controllers
         [NonAction]
         protected  IActionResult MapToApiResult( ResultOperation<int> result)
         {
-            if (result.IsSuccess)
+            if (result.isSuccess)
             {
-                return Ok(result.Message);
+                return Ok(result.message);
             }
             else if(result.Data == StatusCodes.Status400BadRequest)
                         {
-                return BadRequest(result.Message);  
+                return BadRequest(result.message);  
             }
             else
                 return StatusCode(result.Data, result);

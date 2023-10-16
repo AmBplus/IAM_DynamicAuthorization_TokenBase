@@ -51,6 +51,7 @@ public class CustomAuthorizeAttribute : System.Attribute,
         {
             return;
         }
+
         // **************************************************
         var authenticatedUserService = services
         .GetService<AuthenticatedUserService>();
@@ -154,7 +155,7 @@ public class CustomAuthorizeAttribute : System.Attribute,
             RoleName = userRole
         });
  
-        if (roleHasPermissionResult.IsSuccess == false)
+        if (roleHasPermissionResult.isSuccess == false)
         {
             context.Result = new Microsoft.AspNetCore.Mvc.ForbidResult();
             return;

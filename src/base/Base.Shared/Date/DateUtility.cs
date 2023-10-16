@@ -4,8 +4,8 @@ public static class DateUtility
 {
     public static DateTime ToDateTimeNow(this DateTime date)
     {
-        return DateTime.Now;
+        return DateTime.UtcNow;
     }
   
-    public static DateTime DateTimeNow { get { return DateTime.Now; } } 
+    public static DateTime DateTimeNow { get { return DateTime.UtcNow; } } 
 }

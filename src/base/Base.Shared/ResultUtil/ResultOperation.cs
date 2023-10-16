@@ -7,49 +7,50 @@ public class ResultOperation
 {
     private ResultOperation()
     {
-        Message = new List<string>();
+        
     }
-    public bool IsSuccess { get; private set; }
-    public IEnumerable<string>? Message { get; private set; }
+    public bool isSuccess { get; private set; }
 
-    public static ResultOperation ToSuccessResult(string message)
+    public string message { get; private set; } = string.Empty;
+
+    public static ResultOperation ToSuccessResult(string msg)
     {
         return new ResultOperation()
         {
-            IsSuccess = true,
-            Message = new List<string>() { message },
+            isSuccess = true,
+            message =  msg
         };
     }
     public static ResultOperation ToSuccessResult()
     {
         return new ResultOperation()
         {
-            IsSuccess = true,
-            Message = new List<string>()
+            isSuccess = true,
+            
         };
     }
     public static ResultOperation ToFailedResult(string message)
     {
         return new ResultOperation()
         {
-            IsSuccess = false,
-            Message = new List<string>() { message },
+            isSuccess = false,
+            message = message,
         };
     }
     public static ResultOperation ToFailedResult(List<string> message)
     {
         return new ResultOperation()
         {
-            IsSuccess = false,
-            Message = message,
+            isSuccess = false,
+            message = string.Join("\n", message)
         };
     }
     public static ResultOperation ToFailedResult(IEnumerable<string> message)
     {
         return new ResultOperation()
         {
-            IsSuccess = false,
-            Message = message,
+            isSuccess = false,
+            message = string.Join("\n", message)
         };
     }
 }
@@ -61,11 +62,11 @@ public class ResultOperation
 /// <typeparam name="T">نوع دیتایی که قصد برگرداندن آن را دارید</typeparam>
 public class ResultOperation<T>
 {
-    public bool IsSuccess { get; private set; }
-    public IEnumerable<string>? Message { get; private set; }
+    public bool isSuccess { get; private set; }
+    public string message { get; private set; }
     private ResultOperation()
     {
-        Message = new List<string>();
+        message = string.Empty;
     }
     public T Data { get; private set; }
     public static ResultOperation<T> ToSuccessResult<T>(T data)
@@ -73,8 +74,8 @@ public class ResultOperation<T>
         return new ResultOperation<T>()
         {
             Data = data,
-            IsSuccess = true,
-            Message = new List<string>()
+            isSuccess = true,
+           
         };
     }
     public static ResultOperation<T> ToSuccessResult(string message, T data)
@@ -82,8 +83,8 @@ public class ResultOperation<T>
         return new ResultOperation<T>()
         {
             Data = data,
-            IsSuccess = true,
-            Message = new List<string>() { message },
+            isSuccess = true,
+            message = message
         };
     }
     public static ResultOperation<T> ToSuccessResult(List<string> message, T data)
@@ -91,40 +92,40 @@ public class ResultOperation<T>
         return new ResultOperation<T>()
         {
             Data = data,
-            IsSuccess = true,
-            Message = message,
+            isSuccess = true,
+            message = string.Join("\n", message)
         };
     }
     public static ResultOperation<T> ToFailedResult()
     {
         return new ResultOperation<T>()
         {
-            Message = new List<string>() { },
-            IsSuccess = false,
+           
+            isSuccess = false,
         };
     }
     public static ResultOperation<T> ToFailedResult(string message)
     {
         return new ResultOperation<T>()
         {
-            Message = new List<string>() { message },
-            IsSuccess = false,
+            message = message ,
+            isSuccess = false,
         };
     }
     public static ResultOperation<T> ToFailedResult(List<string> message)
     {
         return new ResultOperation<T>()
         {
-            Message = message,
-            IsSuccess = false,
+            message = string.Join("\n", message),
+            isSuccess = false,
         };
     }
     public static ResultOperation<T> ToFailedResult(IEnumerable<string> message)
     {
         return new ResultOperation<T>()
         {
-            Message = message,
-            IsSuccess = false,
+            message = string.Join("\n", message),
+            isSuccess = false,
         };
     }
     public static ResultOperation<T> ToFailedResult(string message, T data)
@@ -132,17 +133,17 @@ public class ResultOperation<T>
         return new ResultOperation<T>()
         {
             Data = data,
-            IsSuccess = false,
-            Message = new List<string>() { message }
+            isSuccess = false,
+            message = message
         };
     }
     public static ResultOperation<T> ToFailedResult(List<string> message, T data)
     {
         return new ResultOperation<T>()
         {
-            IsSuccess = false,
+            isSuccess = false,
             Data = data,
-            Message = message
+            message = string.Join("\n", message)
         };
     }
 }

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace AccessManagement.Services.Permission
 {
-    public record GetAllPermissionGroupQueryRequest : IRequest<ResultOperation<List<GetAllPermissionGroupQueryResponse>>>{ }
+    public record GetAllPermissionGroupQueryRequest : IRequest<ResultOperation<List<GetAllPermissionGroupQueryResponse>>> { }
     public record GetAllPermissionGroupQueryResponse
     {
-        public int Id { get; set;}
-        public string Name { get;set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
     public class GetAllPermissionGroupHandler : IRequestHandler<GetAllPermissionGroupQueryRequest, ResultOperation<List<GetAllPermissionGroupQueryResponse>>>
     {
@@ -26,12 +26,13 @@ namespace AccessManagement.Services.Permission
 
         public async Task<ResultOperation<List<GetAllPermissionGroupQueryResponse>>> Handle(GetAllPermissionGroupQueryRequest request, CancellationToken cancellationToken)
         {
-            var groupPermission = Context.GroupPermissions.Select(x => new GetAllPermissionGroupQueryResponse()
+            var groupPermission = Context.GroupPermissions.Select
+                (x => new GetAllPermissionGroupQueryResponse()
             {
                 Id = x.Id,
                 Name = x.Name
             }).ToList();
-            if(groupPermission == null)
+            if (groupPermission == null)
             {
                 return ResultOperation<List<GetAllPermissionGroupQueryResponse>>.
                     ToFailedResult("گروه پرمیشن پیدا نشد");

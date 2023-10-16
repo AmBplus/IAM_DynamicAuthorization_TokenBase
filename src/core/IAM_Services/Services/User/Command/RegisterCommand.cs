@@ -41,7 +41,7 @@ namespace AccessManagement.Services;
 
     public async Task<ResultOperation<int>> Handle(RegisterCommandRequest model, CancellationToken cancellationToken)
         {
-        var userExists = await _userManager.FindByNameAsync(model.Username);
+        var userExists = await _userManager.FindByNameAsync(model.Username?.Trim().ToString());
         if (userExists != null)
             return ResultOperation<int>.ToFailedResult( "User already exists!", 400);
 
@@ -50,7 +50,7 @@ namespace AccessManagement.Services;
             Guid.NewGuid().ToString(),
             model.Username
         );
-        var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password?.Trim().ToString());
         if (!result.Succeeded)
             return ResultOperation<int>.ToFailedResult(message: "User creation failed! Please check user details and try again." ,StatusCodes.Status500InternalServerError);
 
@@ -61,9 +61,9 @@ namespace AccessManagement.Services;
         try
         {
             var user = Activator.CreateInstance<UserEntity>();
-            user.Email = email;
-            user.SecurityStamp = securityStamp;
-            user.UserName = username;
+            user.Email = email.Trim().ToString();
+            user.SecurityStamp = securityStamp.Trim().ToString();
+            user.UserName = username.Trim().ToString();
             return user;
         }
         catch

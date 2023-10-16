@@ -16,7 +16,7 @@ public class TokenController : ControllerBase
     {
         this.mediator = mediator;
     }
-
+    [AllowAnonymous()]
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh([FromBody]RefreshTokenRequest request)
     {

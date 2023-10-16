@@ -3,6 +3,7 @@ using AccessManagement.Attributes;
 using AccessManagement.Services;
 using Base.NameHelper;
 using Base.Shared;
+using Base.Shared.Date;
 using Base.Shared.ResultUtility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -29,7 +30,7 @@ namespace AccessManagement.Services;
         {
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSettings.Secret));
         var sigInCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-        var expire = Base.Shared.Utility.Now.AddMinutes(JwtSettings.TokenValidityInMinutes);
+        var expire = DateUtility.DateTimeNow.AddMinutes(JwtSettings.TokenValidityInMinutes);
         var tokeOptions = new JwtSecurityToken(
             issuer: JwtSettings.ValidIssuer,
             audience: JwtSettings.ValidAudience,
@@ -49,25 +50,15 @@ namespace AccessManagement.Services;
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
-
+                
                 if (jwtToken == null) return null;
+                 return new ClaimsPrincipal(new ClaimsIdentity(jwtToken.Claims));
 
-                var symmetricKey = Convert.FromBase64String(JwtSettings.Secret);
 
-                var validationParameters = new TokenValidationParameters()
-                {
-                    RequireExpirationTime = true,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    IssuerSigningKey = new SymmetricSecurityKey(symmetricKey)
-                };
-
-                var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
-
-                return principal;
+           
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return null;
             }
@@ -77,11 +68,11 @@ namespace AccessManagement.Services;
 
     public interface IJwtService
     {
-    (string, DateTime) GenerateToken(IEnumerable<Claim> claims);
+         (string, DateTime) GenerateToken(IEnumerable<Claim> claims);
         ClaimsPrincipal GetPrincipal(string token);
 
     }
-[PermissionConvention(GroupName = NameHelper.GroupName.TokenManagement,Module = NameHelper.ModuleName.AccessManagement)]
+
     public interface ITokenService {
          AuthResponse GetAuthTokenResult(IEnumerable<Claim> claims);
          ClaimsPrincipal GetPrincipal(string token);
@@ -114,7 +105,7 @@ public class TokenService : ITokenService
             RefreshToken = refreshToken,
             AccessToken = token.Item1,
             AccessTokenExpires = token.Item2,
-            RefreshTokenExpires = Base.Shared.Utility.Now.AddDays(JwtSettings.RefreshTokenValidityInDays)
+            RefreshTokenExpires = DateUtility.DateTimeNow.AddDays(JwtSettings.RefreshTokenValidityInDays)
         };
     }
     public ClaimsPrincipal GetPrincipal(string token)

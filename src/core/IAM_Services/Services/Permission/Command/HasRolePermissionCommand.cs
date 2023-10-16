@@ -50,7 +50,7 @@ public HasRolePermissionCommandHandler(IDapperAccessManagementDbContext context)
                 throw new Exception("UnValid Request");
             }
             var flag = await connection.QuerySingleOrDefaultAsync<bool>(
-                "SELECT COUNT(*) FROM PermissionEntityRoleEntity WHERE RolesId = @RoleId AND PermissionsId = @PermissionId",
+                "SELECT 1 FROM PermissionEntityRoleEntity WHERE RolesId = @RoleId AND PermissionsId = @PermissionId",
                 new { RoleId = role.Id, PermissionId = permission.Id});
             connection.Dispose();
             if (!flag)

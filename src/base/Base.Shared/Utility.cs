@@ -18,35 +18,7 @@
         {
             public static long PageSize { get; set; } = 20;
         }
-        public static DateTime Now
-        {
-            get
-            {
-                var currentCulture =
-                    Thread.CurrentThread.CurrentCulture;
-
-                var currentUICulture =
-                    Thread.CurrentThread.CurrentUICulture;
-
-                var englishCulture =
-                    new System.Globalization.CultureInfo(name: "en-US");
-
-                Thread.CurrentThread.CurrentCulture = englishCulture;
-                Thread.CurrentThread.CurrentUICulture = englishCulture;
-
-                var result =
-                    DateTime.Now;
-
-                //var result =
-                //	System.DateTime.Now.AddMinutes(value: 210);
-
-                Thread.CurrentThread.CurrentCulture = currentCulture;
-                Thread.CurrentThread.CurrentUICulture = currentUICulture;
-
-                return result;
-            }
-        }
-
+  
 
         public static string? FixText(string? text)
         {

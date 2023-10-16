@@ -61,6 +61,7 @@ namespace AccessManagement.Api
 
         public async Task<IActionResult> GetUserById([FromHeader] GetUserByIdQueryRequest request)
         {
+            // localizer.get("GetUser")
             var result = await Mediator.Send(request);
             return Ok(result);
         }

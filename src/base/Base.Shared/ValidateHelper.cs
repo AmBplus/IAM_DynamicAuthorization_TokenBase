@@ -50,7 +50,7 @@ public static class ValidationHelper
         if (validationResults.Count > 0)
         {
             var resultError = validationResults.GetFailedResultWithError_s();
-            return ResultOperation.ToFailedResult(resultError.Message);
+            return ResultOperation.ToFailedResult(resultError.message);
         }
        
         return ResultOperation.ToSuccessResult();
